@@ -33,8 +33,24 @@ export default new (class SpacesServices {
 
   async create(data: any): Promise<object | string> {
     try {
-      const response = await this.SpacesRepository.save(data);
-      return response;
+      // const userId = data.userId;
+      const userId = 1;
+
+      const spaces = await this.SpacesRepository.findOne({
+        where: { id: userId },
+      });
+
+      const newSpaces = this.SpacesRepository.create({
+        ...data,
+        spaces: spaces,
+      });
+      const response = await this.SpacesRepository.save(newSpaces);
+
+      // const response = await this.SpacesRepository.save(data);
+      return {
+        response,
+        message: `New Spaces has been added`,
+      };
     } catch (error) {
       return {
         message: `Ooops something went wrong during create content spaces, please see this ==>> ${error}`,
