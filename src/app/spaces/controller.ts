@@ -11,4 +11,16 @@ export default new (class SpacesController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async create(req: Request, res: Response) {
+    try {
+      const data = req.body;
+
+      const Spaces = await SpacesServices.create(data);
+
+      res.status(200).json(Spaces);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 })();
