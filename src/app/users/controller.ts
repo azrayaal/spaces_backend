@@ -10,4 +10,15 @@ export default new (class UserController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async createUser(req: Request, res: Response) {
+    try {
+      const data = req.body;
+      console.log(data);
+      const user = await UserService.create(data);
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 })();
