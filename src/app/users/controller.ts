@@ -2,6 +2,30 @@ import UserService from "./services";
 import { Request, Response } from "express";
 
 export default new (class UserController {
+  async register(req: Request, res: Response) {
+    try {
+      const data = req.body;
+
+      const response = await UserService.register(data);
+
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async signIn(req: Request, res: Response) {
+    try {
+      const data = req.body;
+
+      const signIn = await UserService.logIn(data);
+
+      res.status(200).json(signIn);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   async getUser(req: Request, res: Response) {
     try {
       const users = await UserService.getAll();
