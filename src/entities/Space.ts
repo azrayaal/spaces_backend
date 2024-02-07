@@ -9,6 +9,7 @@ import {
 
 import { User } from "./User";
 import { Replies } from "./Replies";
+import { Likes } from "./likes";
 
 @Entity()
 export class Spaces {
@@ -29,5 +30,8 @@ export class Spaces {
   user: User;
 
   @OneToMany(() => Replies, (replies) => replies.spaces)
-  spaces: Spaces;
+  replies: Replies;
+
+  @OneToMany(() => Likes, (likes) => likes.spaces)
+  likes: Likes;
 }
