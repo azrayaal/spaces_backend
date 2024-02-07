@@ -1,5 +1,6 @@
 import * as express from "express";
 import UserRouter from "./app/users/router";
+import SpacesRouter from "./app/spaces/router";
 import { AppDataSource } from "./data-source";
 
 // AppDataSource.initialize()
@@ -26,6 +27,7 @@ AppDataSource.initialize()
 
     // router
     app.use("/api/v1", UserRouter);
+    app.use("/api/v1", SpacesRouter);
 
     // port
     const Port = 3000;

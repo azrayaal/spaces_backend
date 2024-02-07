@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Spaces } from "./Space";
 
 @Entity()
 export class User {
@@ -22,4 +23,7 @@ export class User {
 
   @Column()
   profile_description: string;
+
+  @OneToMany(() => Spaces, (spaces) => spaces.user)
+  spaces: Spaces;
 }
