@@ -3,31 +3,24 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-
 import { User } from "./User";
-import { Replies } from "./Replies";
+import { Spaces } from "./Space";
 
 @Entity()
-export class Spaces {
+export class Replies {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   content: string;
 
-  @Column()
-  image: string;
-
-  @Column()
-  posted_at: string;
-
-  @ManyToOne(() => User, (user) => user.spaces)
+  @ManyToOne(() => Replies, (replies) => replies.user)
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @OneToMany(() => Replies, (replies) => replies.spaces)
+  @ManyToOne(() => Replies, (replies) => replies.spaces)
+  @JoinColumn({ name: "spaceId" })
   spaces: Spaces;
 }

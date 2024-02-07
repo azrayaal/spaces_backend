@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Spaces } from "./Space";
+import { Replies } from "./Replies";
 
 @Entity()
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
   @OneToMany(() => Spaces, (spaces) => spaces.user)
   spaces: Spaces;
+
+  @OneToMany(() => Replies, (replies) => replies.user)
+  replies: Replies;
 }
