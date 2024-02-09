@@ -14,13 +14,13 @@ export default new (class SpacesController {
 
   async create(req: Request, res: Response) {
     try {
-      // const decodedData = res.locals.decodedData;
+      const decodedData = res.locals.decodedData;
+
       const data = {
         content: req.body.content,
         image: req.body.image,
         posted_at: Date.now(),
-        userId: req.body.userId,
-        // userId: decodedData.id
+        userId: decodedData.id,
       };
 
       console.log(data);
