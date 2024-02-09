@@ -62,7 +62,11 @@ export default new (class UserServices {
       const obj = this.UserRepository.create({
         id: checkEmail.id,
         email: checkEmail.email,
-        password: checkEmail.password,
+        // password: checkEmail.password,
+        username: checkEmail.username,
+        full_name: checkEmail.full_name,
+        profile_picture: checkEmail.profile_picture,
+        profile_description: checkEmail.profile_description,
       });
 
       const token = jwt.sign({ obj }, "secretkey", { expiresIn: "1h" });
