@@ -69,7 +69,7 @@ export default new (class UserServices {
         profile_description: checkEmail.profile_description,
       });
 
-      const token = jwt.sign({ obj }, "secretkey", { expiresIn: "1h" });
+      const token = jwt.sign({ obj }, "secretkey", { expiresIn: "24h" });
       return { message: `Login Success!`, token };
     } catch (error) {
       return {
@@ -103,73 +103,3 @@ export default new (class UserServices {
     }
   }
 })();
-
-// export default new class ProvinceServices {
-//   private readonly ProvinceRepository: Repository<Province> = AppDataSource.getRepository(Province)
-
-//   async getById(id: any): Promise<object | String> {
-//       try {
-//           const getProvinceById = await this.ProvinceRepository.findOne({ where: { id } })
-
-//           if (getProvinceById) {
-//               return getProvinceById;
-//             } else {
-//               return {
-//                 message: 'Province not found',
-//               };
-//             }
-//       } catch (error) {
-//           return {
-//               message: `Ooops something went wrong ${error}`
-//           }
-//       }
-//   }
-
-//   async updateById(id: any, data: any): Promise<object | string> {
-//       try {
-//           const dataProvince = await this.ProvinceRepository.findOne({ where: { id } })
-
-//           if (!dataProvince){
-//               return {
-//                   message: `Data Province with ${id} cannot be found`
-//               }
-//           }
-
-//           const updateProvice = await this.ProvinceRepository.save({
-//               ...dataProvince,
-//               ...data
-//           })
-
-//           return {
-//               message: "Success!! new Province has been Updated!!",
-//               data: updateProvice
-//           }
-
-//       } catch (error) {
-//           return {
-//               message: `Message: Ooops something went error, please see this ==> ${error}`
-//           }
-//       }
-//   }
-
-//   async deleteProvince(id:any): Promise<object | string> {
-//       try {
-//           const deleteProvince = await this.ProvinceRepository.delete(id)
-
-//           if (!deleteProvince) {
-//               return {
-//                   message: `Province with ID ${id} cannot be found`
-//               }
-//           }
-
-//           return {
-//               message: "Success!! Province has been Deleted!!",
-//           }
-//       } catch (error) {
-//           return {
-//               message: `Message: Ooops something went error, please see this ==> ${error}`
-//           }
-//       }
-//   }
-
-// }

@@ -1,10 +1,13 @@
 import { Repository } from "typeorm";
 import { Spaces } from "../../entities/Space";
+import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
 
 export default new (class SpacesServices {
   private readonly SpacesRepository: Repository<Spaces> =
     AppDataSource.getRepository(Spaces);
+  private readonly UserRepository: Repository<User> =
+    AppDataSource.getRepository(User);
 
   async getAll(): Promise<object | string> {
     try {
@@ -35,20 +38,21 @@ export default new (class SpacesServices {
     try {
       const userId = data.userId;
 
-      const spaces = await this.SpacesRepository.findOne({
+      const user = await this.UserRepository.findOne({
         where: { id: userId },
       });
 
       const newSpaces = this.SpacesRepository.create({
         ...data,
-        spaces: spaces,
+        user: user,
       });
+
+      console.log("data create", { ...data, user: user });
+
       const response = await this.SpacesRepository.save(newSpaces);
 
-      // const response = await this.SpacesRepository.save(data);
       return {
         response,
-        userId,
         message: `New Spaces has been added`,
       };
     } catch (error) {

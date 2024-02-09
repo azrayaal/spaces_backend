@@ -23,7 +23,7 @@ export default new (class SpacesController {
         userId: decodedData.id,
       };
 
-      console.log(data);
+      // console.log(data);
 
       const Spaces = await SpacesServices.create(data);
 
