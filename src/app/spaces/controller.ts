@@ -15,7 +15,6 @@ export default new (class SpacesController {
   async create(req: Request, res: Response) {
     try {
       // const decodedData = res.locals.decodedData;
-
       const data = {
         content: req.body.content,
         image: req.body.image,
@@ -29,6 +28,30 @@ export default new (class SpacesController {
       const Spaces = await SpacesServices.create(data);
 
       res.status(200).json(Spaces);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getDetail(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const detail = await SpacesServices.getDetail(id);
+
+      res.status(200).json(detail);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async delete(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const deleteSpaces = await SpacesServices.delete(id);
+
+      res.status(200).json(deleteSpaces);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

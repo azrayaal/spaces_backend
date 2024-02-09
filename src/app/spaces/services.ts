@@ -33,16 +33,16 @@ export default new (class SpacesServices {
 
   async create(data: any): Promise<object | string> {
     try {
-      // const userId = data.userId;
-      const userId = 1;
+      const userId = data.userId;
+      // const userId = 1;
 
-      const spaces = await this.SpacesRepository.findOne({
+      const space = await this.SpacesRepository.findOne({
         where: { id: userId },
       });
 
       const newSpaces = this.SpacesRepository.create({
         ...data,
-        spaces: spaces,
+        spaces: space,
       });
       const response = await this.SpacesRepository.save(newSpaces);
 
@@ -54,6 +54,81 @@ export default new (class SpacesServices {
     } catch (error) {
       return {
         message: `Ooops something went wrong during create content spaces, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async getDetail(id: any): Promise<object | string> {
+    try {
+      const checkId = await this.SpacesRepository.findOne({ where: { id } });
+      if (!checkId) {
+        return { message: `Ooops sorry SpaceS cant be found` };
+      }
+
+      const spaceDetail = await this.SpacesRepository.createQueryBuilder(
+        "spaces"
+      )
+        .leftJoin("spaces.user", "user")
+        .select([
+          "spaces.id",
+          "spaces.content",
+          "spaces.image",
+          "spaces.posted_at",
+          "user.id",
+          "user.full_name",
+          "user.username",
+          "user.profile_picture",
+        ])
+        .where("spaces.id = :id", { id })
+        .getOne();
+
+      return spaceDetail;
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during get detail, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async update(data: any): Promise<object | string> {
+    try {
+      const { id } = data;
+      const existingSpace = await this.SpacesRepository.findOne({
+        where: { id },
+      });
+
+      if (!existingSpace) {
+        return {
+          message: `Ooops SpaceS can't be found`,
+        };
+      }
+
+      const updateSpace = await this.SpacesRepository.save(existingSpace);
+
+      return updateSpace;
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during update spaces, please see this ${error}`,
+      };
+    }
+  }
+
+  async delete(id: any): Promise<object | string> {
+    try {
+      const checkId = await this.SpacesRepository.findOne({ where: { id } });
+      if (!checkId) {
+        return { message: `Ooops SpaceS can't be found` };
+      }
+
+      const deleteSpaces = await this.SpacesRepository.delete(id);
+
+      return {
+        message: `Spaces has been deleted!`,
+        deleteSpaces,
+      };
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during delete SpaceS, please see this ==>> ${error}`,
       };
     }
   }
