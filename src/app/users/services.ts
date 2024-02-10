@@ -3,6 +3,7 @@ import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
+import "dotenv/config";
 
 export default new (class UserServices {
   private readonly UserRepository: Repository<User> =
@@ -69,7 +70,9 @@ export default new (class UserServices {
         profile_description: checkEmail.profile_description,
       });
 
-      const token = jwt.sign({ obj }, "secretkey", { expiresIn: "24h" });
+      const token = jwt.sign({ obj }, process.env.SECRET_KEY, {
+        expiresIn: "24h",
+      });
       return { message: `Login Success!`, token };
     } catch (error) {
       return {

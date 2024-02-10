@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { truncate } from "fs";
 import * as jwt from "jsonwebtoken";
+import "dotenv/config";
 
 export default new (class AuthMiddleware {
   Auth(req: Request, res: Response, next: NextFunction): Response {
@@ -13,7 +13,7 @@ export default new (class AuthMiddleware {
     const token = authHeader.split(" ")[1];
 
     try {
-      const loginSession = jwt.verify(token, "secretkey");
+      const loginSession = jwt.verify(token, process.env.SECRET_KEY);
       res.locals.loginSession = loginSession;
 
       const dataUserLokal = jwt.decode(token, { json: true }) as {
