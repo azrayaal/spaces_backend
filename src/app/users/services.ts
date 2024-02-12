@@ -60,7 +60,7 @@ export default new (class UserServices {
         return `Password is wrong!!`;
       }
 
-      const obj = this.UserRepository.create({
+      const user = this.UserRepository.create({
         id: checkEmail.id,
         email: checkEmail.email,
         // password: checkEmail.password,
@@ -70,7 +70,7 @@ export default new (class UserServices {
         profile_description: checkEmail.profile_description,
       });
 
-      const token = jwt.sign({ obj }, process.env.SECRET_KEY, {
+      const token = jwt.sign({ user }, process.env.SECRET_KEY, {
         expiresIn: "24h",
       });
       return { message: `Login Success!`, token };

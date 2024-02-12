@@ -22,7 +22,7 @@ export default new (class AuthMiddleware {
 
       res.locals.decodedData = dataUserLokal.obj;
 
-      console.log("data user local", dataUserLokal.obj);
+      // console.log("data user local", dataUserLokal.obj);
 
       next();
     } catch (error) {
