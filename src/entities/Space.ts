@@ -19,7 +19,7 @@ export class Spaces {
   @Column()
   content: string;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
   @Column()

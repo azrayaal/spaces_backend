@@ -20,9 +20,9 @@ export default new (class AuthMiddleware {
         [key: string]: any;
       };
 
-      res.locals.decodedData = dataUserLokal.obj;
+      res.locals.decodedData = dataUserLokal.user;
 
-      // console.log("data user local", dataUserLokal.obj);
+      console.log("data user local", dataUserLokal.user);
 
       next();
     } catch (error) {

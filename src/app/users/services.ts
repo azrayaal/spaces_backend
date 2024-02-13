@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Repository, FindOptions } from "typeorm";
 import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
 import * as bcrypt from "bcrypt";
@@ -45,13 +45,16 @@ export default new (class UserServices {
 
   async logIn(data: any) {
     try {
-      const checkEmail = await this.UserRepository.findOne({
-        where: { email: data.email },
-      });
+      const checkEmail = await this.UserRepository.createQueryBuilder("user")
+        .where("user.email = :email OR user.username = :username", {
+          email: data.email,
+          username: data.username,
+        })
+        .getOne();
+
       if (!checkEmail) {
         return `${data.email} has been not registered`;
       }
-
       const comparePassword = await bcrypt.compare(
         data.password,
         checkEmail.password
@@ -59,7 +62,6 @@ export default new (class UserServices {
       if (!comparePassword) {
         return `Password is wrong!!`;
       }
-
       const user = this.UserRepository.create({
         id: checkEmail.id,
         email: checkEmail.email,
@@ -69,7 +71,6 @@ export default new (class UserServices {
         profile_picture: checkEmail.profile_picture,
         profile_description: checkEmail.profile_description,
       });
-
       const token = jwt.sign({ user }, process.env.SECRET_KEY, {
         expiresIn: "24h",
       });

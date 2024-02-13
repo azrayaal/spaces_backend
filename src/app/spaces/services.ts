@@ -24,6 +24,7 @@ export default new (class SpacesServices {
           "profile_picture",
           "profile_description",
         ])
+        .orderBy("spaces.id", "DESC")
         .getRawMany();
 
       return data;
