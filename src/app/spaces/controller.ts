@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import SpacesServices from "./services";
+import cloudinary from "../../libs/cloudinary";
 
 export default new (class SpacesController {
   async gettAll(req: Request, res: Response) {
@@ -18,14 +19,17 @@ export default new (class SpacesController {
 
       const data = {
         content: req.body.content,
+        // image: req.body.image,
         image: res.locals.filename,
         posted_at: Date.now(),
         // userId: req.body.userId,
         userId: decodedData.id,
-        // userId: 1,
       };
 
-      console.log(data);
+      // console.log(data);
+
+      cloudinary.upload();
+      await cloudinary.destination(data.image);
 
       const Spaces = await SpacesServices.create(data);
 
