@@ -37,7 +37,7 @@ export default new (class SpacesServices {
 
   async create(data: any): Promise<object | string> {
     try {
-      const userId = data.userId;
+      const { userId } = data.userId;
 
       const user = await this.UserRepository.findOne({
         where: { id: userId },
@@ -48,7 +48,7 @@ export default new (class SpacesServices {
         user: user,
       });
 
-      console.log("data create", { ...data, user: user });
+      // console.log("data create", { ...data, user: user });
 
       const response = await this.SpacesRepository.save(newSpaces);
 

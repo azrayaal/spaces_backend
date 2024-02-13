@@ -45,8 +45,8 @@ export default new (class UserServices {
 
   async logIn(data: any) {
     try {
-      const checkEmail = await this.UserRepository.createQueryBuilder("user")
-        .where("user.email = :email OR user.username = :username", {
+      const checkEmail = await this.UserRepository.createQueryBuilder()
+        .where("email = :email OR username = :username", {
           email: data.email,
           username: data.username,
         })
@@ -103,6 +103,16 @@ export default new (class UserServices {
     } catch (error) {
       return {
         message: `Ooops something went wrong during create new user, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async testDataUser(): Promise<object | string> {
+    try {
+      await this.UserRepository.find();
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during test data user, please see this ${error}`,
       };
     }
   }
