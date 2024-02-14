@@ -17,23 +17,24 @@ export default new (class SpacesController {
     try {
       const decodedData = res.locals.decodedData;
 
-      const data = {
-        content: req.body.content,
-        // image: req.body.image,
-        image: res.locals.filename,
-        posted_at: Date.now(),
-        // userId: req.body.userId,
-        userId: decodedData.id,
-      };
-
-      // console.log(data);
-
-      cloudinary.upload();
-      await cloudinary.destination(data.image);
-
-      const Spaces = await SpacesServices.create(data);
-
-      res.status(200).json(Spaces);
+      if (req.file) {
+        const data = {
+          content: req.body.content,
+          posted_at: Date.now(),
+          userId: decodedData.id,
+          image: res.locals.filename,
+        };
+        const Spaces = await SpacesServices.create(data);
+        res.status(200).json(Spaces);
+      } else {
+        const data = {
+          content: req.body.content,
+          posted_at: Date.now(),
+          userId: decodedData.id,
+        };
+        const Spaces = await SpacesServices.create(data);
+        res.status(200).json(Spaces);
+      }
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

@@ -30,8 +30,11 @@ export default new (class uploadImage {
             message: `Ooops something went error when you upload image, please see this ==>> ${error}`,
           });
         }
-        // console.log(req.file.filename)
-        res.locals.filename = req.file.filename;
+
+        if (req.file) {
+          res.locals.filename = req.file.filename;
+        }
+        // res.locals.filename = req.file.filename;
         next();
       });
     };

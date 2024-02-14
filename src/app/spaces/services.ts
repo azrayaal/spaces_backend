@@ -25,6 +25,7 @@ export default new (class SpacesServices {
           "profile_description",
         ])
         .orderBy("spaces.id", "DESC")
+        // .getCount();
         .getRawMany();
 
       return data;
@@ -37,7 +38,7 @@ export default new (class SpacesServices {
 
   async create(data: any): Promise<object | string> {
     try {
-      const { userId } = data.userId;
+      const userId = data.userId;
 
       const user = await this.UserRepository.findOne({
         where: { id: userId },
