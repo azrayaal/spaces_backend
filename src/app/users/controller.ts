@@ -4,7 +4,14 @@ import { Request, Response } from "express";
 export default new (class UserController {
   async register(req: Request, res: Response) {
     try {
-      const data = req.body;
+      const data = {
+        username: req.body.username,
+        full_name: req.body.full_name,
+        email: req.body.email,
+        password: req.body.password,
+        profile_picture: res.locals.filename,
+        profile_description: req.body.profile_description,
+      };
 
       const response = await UserService.register(data);
 
