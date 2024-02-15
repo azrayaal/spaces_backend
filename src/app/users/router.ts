@@ -6,9 +6,12 @@ import uploadFile from "../../middleware/uploadImage/index";
 const router = express.Router();
 
 router.get("/user", UserController.getUser);
-router.post("/user", UserController.createUser);
 router.post("/signIn", UserController.signIn);
-router.post("/register", uploadFile.upload("image"), UserController.register);
+router.post(
+  "/register",
+  uploadFile.upload("profile_picture"),
+  UserController.register
+);
 router.get("/testdatauser", AuthMiddleware.Auth, UserController.testDataUser);
 
 export default router;

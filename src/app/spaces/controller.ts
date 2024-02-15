@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import SpacesServices from "./services";
 import cloudinary from "../../libs/cloudinary";
+import { SpacesScheme } from "./validator";
 
 export default new (class SpacesController {
   async gettAll(req: Request, res: Response) {
@@ -24,7 +25,16 @@ export default new (class SpacesController {
           userId: decodedData.id,
           image: res.locals.filename,
         };
-        const Spaces = await SpacesServices.create(data);
+
+        const { error, value } = SpacesScheme.validate(data);
+        if (error) {
+          return res.status(400).json(error.details[0].message);
+        }
+
+        cloudinary.upload();
+        await cloudinary.destination(value.image);
+
+        const Spaces = await SpacesServices.create(value);
         res.status(200).json(Spaces);
       } else {
         const data = {
@@ -32,6 +42,12 @@ export default new (class SpacesController {
           posted_at: Date.now(),
           userId: decodedData.id,
         };
+
+        const { error } = SpacesScheme.validate(data);
+        if (error) {
+          return res.status(400).json(error.details[0].message);
+        }
+
         const Spaces = await SpacesServices.create(data);
         res.status(200).json(Spaces);
       }

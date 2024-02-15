@@ -1,5 +1,7 @@
 import UserService from "./services";
 import { Request, Response } from "express";
+import { UserScheme } from "./validator";
+import cloudinary from "../../libs/cloudinary";
 
 export default new (class UserController {
   async register(req: Request, res: Response) {
@@ -9,11 +11,21 @@ export default new (class UserController {
         full_name: req.body.full_name,
         email: req.body.email,
         password: req.body.password,
-        profile_picture: res.locals.filename,
         profile_description: req.body.profile_description,
+        profile_picture: res.locals.filename,
+        created_at: Date.now(),
       };
 
-      const response = await UserService.register(data);
+      const { error, value } = UserScheme.validate(data);
+      if (error) {
+        return res.status(400).json(error.details[0].message);
+      }
+
+      cloudinary.upload();
+      await cloudinary.destination(value.profile_picture);
+
+      console.log(value);
+      const response = await UserService.register(value);
 
       res.status(200).json(response);
     } catch (error) {

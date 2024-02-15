@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Timestamp,
 } from "typeorm";
 import { User } from "./User";
 import { Spaces } from "./Space";
@@ -23,4 +25,7 @@ export class Replies {
   @ManyToOne(() => Replies, (replies) => replies.spaces)
   @JoinColumn({ name: "spaceId" })
   spaces: Spaces;
+
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: Date;
 }

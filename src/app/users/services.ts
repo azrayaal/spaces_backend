@@ -28,12 +28,13 @@ export default new (class UserServices {
         password: hashPasword,
         profile_picture: data.profile_picture,
         profile_description: data.profile_description,
+        created_at: data.posted_at,
       });
 
       const response = await this.UserRepository.save(obj);
 
       return {
-        message: `Success!, new User has been added!`,
+        message: `Success!, You just created new account!`,
         response,
       };
     } catch (error) {

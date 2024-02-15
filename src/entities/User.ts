@@ -1,7 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Spaces } from "./Space";
 import { Replies } from "./Replies";
-import { Likes } from "./likes";
+import { Likes } from "./Likes";
+import { Follow } from "./Follow";
 
 @Entity()
 export class User {
@@ -26,6 +33,9 @@ export class User {
   @Column()
   profile_description: string;
 
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: Date;
+
   @OneToMany(() => Spaces, (spaces) => spaces.user)
   spaces: Spaces;
 
@@ -34,4 +44,10 @@ export class User {
 
   @OneToMany(() => Likes, (likes) => likes.user)
   likes: Likes;
+
+  @OneToMany(() => Follow, (follow) => follow.following)
+  following: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.follower)
+  follower: Follow[];
 }

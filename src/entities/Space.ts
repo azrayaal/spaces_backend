@@ -1,15 +1,17 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Timestamp,
 } from "typeorm";
 
 import { User } from "./User";
 import { Replies } from "./Replies";
-import { Likes } from "./likes";
+import { Likes } from "./Likes";
 
 @Entity()
 export class Spaces {
@@ -22,8 +24,8 @@ export class Spaces {
   @Column({ nullable: true })
   image: string;
 
-  @Column()
-  posted_at: string;
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: Date;
 
   @ManyToOne(() => User, (user) => user.spaces)
   @JoinColumn({ name: "userId" })
