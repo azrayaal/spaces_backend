@@ -12,7 +12,9 @@ export default new (class CloudinaryConfig {
   }
   async destination(image: string): Promise<any> {
     try {
-      return await cloudinary.uploader.upload(`src/uploads/${image}`);
+      return await cloudinary.uploader.upload(`src/uploads/${image}`, {
+        resource_type: "auto",
+      });
     } catch (error) {
       throw error;
     }

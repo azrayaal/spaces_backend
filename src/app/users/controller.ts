@@ -24,7 +24,7 @@ export default new (class UserController {
       cloudinary.upload();
       await cloudinary.destination(value.profile_picture);
 
-      console.log(value);
+      // console.log(value);
       const response = await UserService.register(value);
 
       res.status(200).json(response);
@@ -68,7 +68,7 @@ export default new (class UserController {
   async testDataUser(req: Request, res: Response) {
     try {
       await UserService.testDataUser();
-      console.log("data user Log In", res.locals.decodedData);
+      // console.log("data user Log In", res.locals.decodedData);
       res.status(200).json();
     } catch (error) {
       res.status(500).json({ message: error.message });

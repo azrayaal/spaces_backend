@@ -54,7 +54,7 @@ export default new (class UserServices {
         .getOne();
 
       if (!checkEmail) {
-        return `${data.email} has been not registered`;
+        return `Your account has been not registered`;
       }
       const comparePassword = await bcrypt.compare(
         data.password,
@@ -85,7 +85,13 @@ export default new (class UserServices {
 
   async getAll(): Promise<object | string> {
     try {
-      const data = await this.UserRepository.find();
+      const data = await this.UserRepository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.following", "following")
+        .leftJoinAndSelect("user.follower", "follower")
+        .getMany();
+      // .addSelect("COUNT(user.following)")
+      // .getCount()
+      // .getMany();
       return data;
     } catch (error) {
       return {
