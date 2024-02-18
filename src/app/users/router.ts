@@ -12,6 +12,12 @@ router.post(
   uploadFile.upload("profile_picture"),
   UserController.register
 );
+router.put(
+  "/edit-profile/:id",
+  uploadFile.upload("profile_picture"),
+  UserController.updateUser
+);
+router.get("/user/:id", UserController.getDetail);
 router.get("/testdatauser", AuthMiddleware.Auth, UserController.testDataUser);
 
 export default router;

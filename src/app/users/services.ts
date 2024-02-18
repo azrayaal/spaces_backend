@@ -88,10 +88,9 @@ export default new (class UserServices {
       const data = await this.UserRepository.createQueryBuilder("user")
         .leftJoinAndSelect("user.following", "following")
         .leftJoinAndSelect("user.follower", "follower")
+        .loadRelationCountAndMap("user.followingTotal", "user.following")
+        .loadRelationCountAndMap("user.followerTotal", "user.follower")
         .getMany();
-      // .addSelect("COUNT(user.following)")
-      // .getCount()
-      // .getMany();
       return data;
     } catch (error) {
       return {
@@ -110,6 +109,63 @@ export default new (class UserServices {
     } catch (error) {
       return {
         message: `Ooops something went wrong during create new user, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async getDetail(id: any): Promise<object | string> {
+    try {
+      const chekId = await this.UserRepository.findOne({ where: { id } });
+      if (!chekId) {
+        return {
+          message: `Id can not be found`,
+        };
+      }
+
+      const detailUser = await this.UserRepository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.following", "following")
+        .leftJoinAndSelect("user.follower", "follower")
+        .loadRelationCountAndMap("user.followingTotal", "user.following")
+        .loadRelationCountAndMap("user.followerTotal", "user.follower")
+        .getMany();
+
+      return detailUser;
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during getDetail, please see this ==>> ${error}`,
+      };
+    }
+  }
+  async updateUser(data: any): Promise<object | string> {
+    try {
+      const {
+        id,
+        username,
+        full_name,
+        email,
+        profile_picture,
+        profile_description,
+      } = data;
+
+      const existingUser = await this.UserRepository.findOne({ where: { id } });
+      if (!existingUser) {
+        return {
+          message: `User can not be found`,
+        };
+      }
+
+      existingUser.username = username;
+      existingUser.full_name = full_name;
+      existingUser.email = email;
+      existingUser.profile_picture = profile_picture;
+      existingUser.profile_description = profile_description;
+
+      const updateUser = await this.UserRepository.save(existingUser);
+
+      return { message: `Success, your account has been updated!`, updateUser };
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during getDetail, please see this ==>> ${error}`,
       };
     }
   }
