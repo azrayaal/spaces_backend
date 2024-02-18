@@ -127,7 +127,7 @@ export default new (class UserServices {
         .leftJoinAndSelect("user.follower", "follower")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
-        .getMany();
+        .getOne();
 
       return detailUser;
     } catch (error) {

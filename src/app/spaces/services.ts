@@ -49,7 +49,7 @@ export default new (class SpacesServices {
         user: user,
       });
 
-      // console.log("data create", { ...data, user: user });
+      console.log("data create", { ...data, user: user });
 
       const response = await this.SpacesRepository.save(newSpaces);
 
@@ -79,7 +79,7 @@ export default new (class SpacesServices {
           "spaces.id",
           "spaces.content",
           "spaces.image",
-          "spaces.posted_at",
+          "spaces.created_at",
           "user.id",
           "user.full_name",
           "user.username",
