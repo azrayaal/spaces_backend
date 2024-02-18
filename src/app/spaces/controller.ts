@@ -42,10 +42,7 @@ export default new (class SpacesController {
           userId: res.locals.loginSession.user.id,
         };
 
-        console.log(
-          "res.locals.loginSession.user.id",
-          res.locals.loginSession.user.id
-        );
+        console.log(data);
 
         const { error } = SpacesSchemeNoImg.validate(data);
         if (error) {

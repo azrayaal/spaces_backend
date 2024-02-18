@@ -18,6 +18,7 @@ export default new (class UserController {
 
       const { error, value } = UserScheme.validate(data);
       if (error) {
+        console.log(error);
         return res.status(400).json(error.details[0].message);
       }
 
