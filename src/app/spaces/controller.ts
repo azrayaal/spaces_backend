@@ -17,41 +17,67 @@ export default new (class SpacesController {
 
   async create(req: Request, res: Response) {
     try {
-      if (req.file) {
-        const data = {
-          content: req.body.content,
-          created_at: new Date(),
-          image: res.locals.filename,
-          userId: res.locals.loginSession.user.id,
-        };
+      // if (req.file) {
+      //   const data = {
+      //     content: req.body.content,
+      //     created_at: new Date(),
+      //     image: res.locals.filename,
+      //     userId: res.locals.loginSession.user.id,
+      //   };
 
-        const { error, value } = SpacesScheme.validate(data);
-        if (error) {
-          return res.status(400).json(error.details[0].message);
-        }
+      //   const { error, value } = SpacesScheme.validate(data);
+      //   if (error) {
+      //     return res.status(400).json(error.details[0].message);
+      //   }
+
+      //   cloudinary.upload();
+      //   await cloudinary.destination(value.image);
+
+      //   const Spaces = await SpacesServices.create(value);
+      //   res.status(200).json(Spaces);
+      // } else {
+      //   const data = {
+      //     content: req.body.content,
+      //     created_at: new Date(),
+      //     userId: res.locals.loginSession.user.id,
+      //   };
+
+      let img = null;
+
+      if (req.file) {
+        img = res.locals.filename;
+      }
+
+      const data = {
+        content: req.body.content,
+        created_at: new Date(),
+        image: img,
+        userId: res.locals.loginSession.user.id,
+      };
+
+      if (req.file) {
+        // const { error, value } = SpacesScheme.validate(data);
+        // if (error) {
+        //   return res.status(400).json(error.details[0].message);
+        // }
 
         cloudinary.upload();
-        await cloudinary.destination(value.image);
-
-        const Spaces = await SpacesServices.create(value);
-        res.status(200).json(Spaces);
-      } else {
-        const data = {
-          content: req.body.content,
-          created_at: new Date(),
-          userId: res.locals.loginSession.user.id,
-        };
-
-        console.log(data);
-
-        const { error } = SpacesSchemeNoImg.validate(data);
-        if (error) {
-          return res.status(400).json(error.details[0].message);
-        }
-
-        const Spaces = await SpacesServices.create(data);
-        res.status(200).json(Spaces);
+        await cloudinary.destination(data.image);
       }
+      // const { error, value } = SpacesSchemeNoImg.validate(data);
+      // if (error) {
+      //   return res.status(400).json(error.details[0].message);
+      // }
+
+      console.log(data);
+
+      // const { error } = SpacesSchemeNoImg.validate(data);
+      // if (error) {
+      //   return res.status(400).json(error.details[0].message);
+      // }
+
+      // const Spaces = await SpacesServices.create(value);
+      // res.status(200).json(Spaces);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
