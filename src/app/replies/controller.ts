@@ -18,7 +18,6 @@ export default new (class ReplyControllers {
   async create(req: Request, res: Response) {
     try {
       let img = null;
-      let space = parseInt(req.body.spaceId);
 
       if (req.file) {
         img = res.locals.filename;
@@ -29,7 +28,8 @@ export default new (class ReplyControllers {
         created_at: new Date(),
         image: img,
         userId: res.locals.loginSession.user.id,
-        spaceId: space,
+        // spaceId: req.body.spaceId,
+        spaceId: parseInt(req.body.spaceId),
       };
 
       if (req.file) {

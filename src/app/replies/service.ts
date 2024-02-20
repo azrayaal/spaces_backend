@@ -54,17 +54,33 @@ export default new (class ReplyServices {
 
       const newReply = this.RepliesRepository.create({
         ...data,
-        user: user,
-        space: space,
+        user,
+        spaces: space,
       });
 
-      console.log("Reply create", { ...data, user, space });
+      // console.log("Reply spaceid", space);
+      console.log("object data reply", newReply);
+      console.log("spaceId biasa", space);
+      // console.log("spaceId biasa", space);
 
       const response = await this.RepliesRepository.save(newReply);
 
+      // const response = await this.RepliesRepository.createQueryBuilder()
+      //   .insert()
+      //   .into(Replies)
+      //   .values({
+      //     content: data.content,
+      //     image: data.image,
+      //     created_at: data.created_at,
+      //     user: data.userId,
+      //     spaces: data.spaceId,
+      //   })
+      //   .execute();
+
       return {
         response,
-        message: `Succes!`,
+        newReply,
+        message: `Success!`,
       };
     } catch (error) {
       return {
@@ -84,17 +100,20 @@ export default new (class ReplyServices {
         "replies"
       )
         // .leftJoinAndSelect("replies.user", "user")
-        .leftJoin("replies.user", "user")
-        .select([
-          "replies.id",
-          "replies.content",
-          "replies.image",
-          "replies.created_at",
-          "user.id",
-          //   "user.full_name",
-          //   "user.username",
-          //   "user.profile_picture",
-        ])
+        .leftJoinAndSelect("replies.user", "user")
+        .leftJoinAndSelect("replies.spaces", "spaces")
+
+        // .select([
+        //   "replies.id",
+        //   "replies.content",
+        //   "replies.image",
+        //   "replies.created_at",
+        //   "user.id",
+        //   "spaces.id",
+        //   "spaces.content",
+        //   "user.username",
+        //   "user.profile_picture",
+        // ])
         // .where("replies.id = :id", { id })
         .getOne();
 

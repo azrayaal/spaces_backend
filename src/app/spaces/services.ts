@@ -76,6 +76,8 @@ export default new (class SpacesServices {
       )
         .leftJoin("spaces.user", "user")
         .leftJoin("spaces.replies", "replies")
+        .loadRelationCountAndMap("spaces.totalReplies", "spaces.replies")
+        // .loadRelationCountAndMap("replies.totalReplies", "replies.spaces")
         .select([
           "spaces.id",
           "spaces.content",

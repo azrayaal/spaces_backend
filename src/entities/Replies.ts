@@ -5,7 +5,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
 } from "typeorm";
 import { User } from "./User";
 import { Spaces } from "./Space";
@@ -21,11 +20,11 @@ export class Replies {
   @Column({ nullable: true })
   image: string;
 
-  @ManyToOne(() => Replies, (replies) => replies.user)
+  @ManyToOne(() => User, (user) => user.replies)
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToOne(() => Replies, (replies) => replies.spaces)
+  @ManyToOne(() => Spaces, (spaces) => spaces.replies)
   @JoinColumn({ name: "spaceId" })
   spaces: Spaces;
 

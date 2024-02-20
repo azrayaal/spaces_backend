@@ -31,9 +31,15 @@ export class Spaces {
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @OneToMany(() => Replies, (replies) => replies.spaces, { cascade: true })
-  replies: Replies;
+  @OneToMany(() => Replies, (replies) => replies.spaces, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  replies: Replies[];
 
-  @OneToMany(() => Likes, (likes) => likes.spaces, { cascade: true })
-  likes: Likes;
+  @OneToMany(() => Likes, (likes) => likes.spaces, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  likes: Likes[];
 }

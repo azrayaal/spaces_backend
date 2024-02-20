@@ -36,18 +36,33 @@ export class User {
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: Date;
 
-  @OneToMany(() => Spaces, (spaces) => spaces.user, { cascade: true })
-  spaces: Spaces;
+  @OneToMany(() => Spaces, (spaces) => spaces.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  spaces: Spaces[];
 
-  @OneToMany(() => Replies, (replies) => replies.user, { cascade: true })
-  replies: Replies;
+  @OneToMany(() => Replies, (replies) => replies.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  replies: Replies[];
 
-  @OneToMany(() => Likes, (likes) => likes.user, { cascade: true })
-  likes: Likes;
+  @OneToMany(() => Likes, (likes) => likes.user, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
+  likes: Likes[];
 
-  @OneToMany(() => Follow, (follow) => follow.following, { cascade: true })
+  @OneToMany(() => Follow, (follow) => follow.following, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   following: Follow[];
 
-  @OneToMany(() => Follow, (follow) => follow.follower, { cascade: true })
+  @OneToMany(() => Follow, (follow) => follow.follower, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   follower: Follow[];
 }
