@@ -6,13 +6,20 @@ import cloudinary from "../../libs/cloudinary";
 export default new (class UserController {
   async register(req: Request, res: Response) {
     try {
+      let img =
+        "https://res.cloudinary.com/ddpo1vjim/image/upload/v1708411150/SpaceS/68661451_2780877505274604_8670345077089894400_n-1708411149217.png.jpg";
+
+      if (req.file) {
+        img = res.locals.filename;
+      }
+
       const data = {
         username: req.body.username,
         full_name: req.body.full_name,
         email: req.body.email,
         password: req.body.password,
         profile_description: req.body.profile_description,
-        profile_picture: res.locals.filename,
+        profile_picture: img,
         created_at: Date.now(),
       };
 
@@ -22,10 +29,13 @@ export default new (class UserController {
         return res.status(400).json(error.details[0].message);
       }
 
-      cloudinary.upload();
-      await cloudinary.destination(value.profile_picture);
+      console.log("dataimage", value);
 
-      // console.log(value);
+      if (req.file) {
+        cloudinary.upload();
+        await cloudinary.destination(value.profile_picture);
+      }
+
       const response = await UserService.register(value);
 
       res.status(200).json(response);

@@ -31,11 +31,13 @@ export default new (class UserServices {
         created_at: data.posted_at,
       });
 
+      // console.log("data regis", obj);
+
       const response = await this.UserRepository.save(obj);
 
       return {
         message: `Success!, You just created new account!`,
-        response,
+        // response,
       };
     } catch (error) {
       return {
