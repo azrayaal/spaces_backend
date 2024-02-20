@@ -18,6 +18,9 @@ export class Replies {
   @Column()
   content: string;
 
+  @Column({ nullable: true })
+  image: string;
+
   @ManyToOne(() => Replies, (replies) => replies.user)
   @JoinColumn({ name: "userId" })
   user: User;

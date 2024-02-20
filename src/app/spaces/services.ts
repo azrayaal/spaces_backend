@@ -75,6 +75,7 @@ export default new (class SpacesServices {
         "spaces"
       )
         .leftJoin("spaces.user", "user")
+        .leftJoin("spaces.replies", "replies")
         .select([
           "spaces.id",
           "spaces.content",
@@ -84,6 +85,7 @@ export default new (class SpacesServices {
           "user.full_name",
           "user.username",
           "user.profile_picture",
+          "replies.id",
         ])
         .where("spaces.id = :id", { id })
         .getOne();

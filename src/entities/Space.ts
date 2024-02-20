@@ -31,9 +31,9 @@ export class Spaces {
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @OneToMany(() => Replies, (replies) => replies.spaces)
+  @OneToMany(() => Replies, (replies) => replies.spaces, { cascade: true })
   replies: Replies;
 
-  @OneToMany(() => Likes, (likes) => likes.spaces)
+  @OneToMany(() => Likes, (likes) => likes.spaces, { cascade: true })
   likes: Likes;
 }

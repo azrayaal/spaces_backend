@@ -15,6 +15,7 @@ export default new (class CloudinaryConfig {
       return await cloudinary.uploader.upload(`src/uploads/${image}`, {
         public_id: filename,
         overwrite: true,
+        folder: "SpaceS",
       });
     } catch (error) {
       throw error;

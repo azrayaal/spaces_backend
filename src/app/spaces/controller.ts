@@ -69,15 +69,15 @@ export default new (class SpacesController {
       //   return res.status(400).json(error.details[0].message);
       // }
 
-      console.log(data);
+      // console.log(data);
 
       // const { error } = SpacesSchemeNoImg.validate(data);
       // if (error) {
       //   return res.status(400).json(error.details[0].message);
       // }
 
-      // const Spaces = await SpacesServices.create(value);
-      // res.status(200).json(Spaces);
+      const Spaces = await SpacesServices.create(data);
+      res.status(200).json(Spaces);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
