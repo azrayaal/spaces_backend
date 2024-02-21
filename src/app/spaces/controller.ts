@@ -107,4 +107,18 @@ export default new (class SpacesController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async searchSpace(req: Request, res: Response) {
+    try {
+      const params = req.query.content;
+      // const params = req.body.content;
+
+      const response = await SpacesServices.searchSpace(params);
+      // console.log("data prams controller", params);
+      // console.log("data body controller", params);
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 })();

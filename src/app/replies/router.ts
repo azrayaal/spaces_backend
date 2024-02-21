@@ -13,6 +13,7 @@ router.post(
   ReplyControllers.create
 );
 router.get("/reply/:id", ReplyControllers.getDetail);
+router.get("/reply", ReplyControllers.getdetailallReply);
 // router.delete("/spaces/:id", AuthMiddleware.Auth, ReplyControllers.delete);
 
 export default router;

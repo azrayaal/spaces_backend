@@ -85,4 +85,15 @@ export default new (class ReplyControllers {
   //       res.status(500).json({ message: error.message });
   //     }
   //   }
+
+  async getdetailallReply(req: Request, res: Response) {
+    try {
+      const params = req.params;
+      const reply = await ReplyServices.getdetailallReply(params);
+
+      res.status(200).json(reply);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
 })();

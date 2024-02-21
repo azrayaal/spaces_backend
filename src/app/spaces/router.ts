@@ -6,6 +6,7 @@ import AuthMiddleware from "../../middleware/auth";
 const router = express.Router();
 
 router.get("/spaces", SpacesController.gettAll);
+router.get("/search-space", SpacesController.searchSpace);
 router.post(
   "/spaces",
   uploadFile.upload("image"),

@@ -125,29 +125,6 @@ export default new (class ReplyServices {
     }
   }
 
-  //   async update(data: any): Promise<object | string> {
-  //     try {
-  //       const { id } = data;
-  //       const existingSpace = await this.SpacesRepository.findOne({
-  //         where: { id },
-  //       });
-
-  //       if (!existingSpace) {
-  //         return {
-  //           message: `Ooops SpaceS can't be found`,
-  //         };
-  //       }
-
-  //       const updateSpace = await this.SpacesRepository.save(existingSpace);
-
-  //       return updateSpace;
-  //     } catch (error) {
-  //       return {
-  //         message: `Ooops something went wrong during update spaces, please see this ${error}`,
-  //       };
-  //     }
-  //   }
-
   async delete(id: any): Promise<object | string> {
     try {
       const checkId = await this.RepliesRepository.findOne({ where: { id } });
@@ -164,6 +141,25 @@ export default new (class ReplyServices {
     } catch (error) {
       return {
         message: `Ooops something went wrong during delete SpaceS, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async getdetailallReply(params: any): Promise<object | string> {
+    try {
+      const response = await this.RepliesRepository.createQueryBuilder("reply")
+        .leftJoinAndSelect("reply.user", "user")
+        .leftJoinAndSelect("reply.spaces", "spaces")
+        // .orderBy({ where: { id: params } })
+        .getOne();
+
+      // findOne({ where: params });
+      console.log(response);
+
+      return response;
+    } catch (error) {
+      return {
+        message: `Oops something went error during getdetailreply, please see this ${error}`,
       };
     }
   }

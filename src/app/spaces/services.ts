@@ -142,4 +142,20 @@ export default new (class SpacesServices {
       };
     }
   }
+
+  async searchSpace(params: any): Promise<object | string> {
+    try {
+      const response = await this.SpacesRepository.createQueryBuilder("spaces")
+        .where("spaces.content LIKE :content", { content: `%${params}%` })
+        .getMany();
+
+      console.log(response);
+
+      return response;
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during serching space, please see this ${error}`,
+      };
+    }
+  }
 })();
