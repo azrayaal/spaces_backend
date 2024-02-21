@@ -42,28 +42,28 @@ export default new (class SpacesController {
       //     userId: res.locals.loginSession.user.id,
       //   };
 
-      let img = null;
+      // let img = null;
 
-      if (req.file) {
-        img = res.locals.filename;
-      }
+      // if (req.file) {
+      //   img = res.locals.filename;
+      // }
 
       const data = {
         content: req.body.content,
         created_at: new Date(),
-        image: img,
+        image: res.locals.filename,
         userId: res.locals.loginSession.user.id,
       };
 
-      if (req.file) {
-        // const { error, value } = SpacesScheme.validate(data);
-        // if (error) {
-        //   return res.status(400).json(error.details[0].message);
-        // }
+      // if (req.file) {
+      // const { error, value } = SpacesScheme.validate(data);
+      // if (error) {
+      //   return res.status(400).json(error.details[0].message);
+      // }
 
-        cloudinary.upload();
-        await cloudinary.destination(data.image);
-      }
+      cloudinaryConfig.upload();
+      await cloudinaryConfig.destination(data.image);
+      // }
       // const { error, value } = SpacesSchemeNoImg.validate(data);
       // if (error) {
       //   return res.status(400).json(error.details[0].message);
