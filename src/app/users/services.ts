@@ -181,4 +181,22 @@ export default new (class UserServices {
       };
     }
   }
+
+  async searchUser(params: any): Promise<object | string> {
+    try {
+      const response = await this.UserRepository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.following", "following")
+        .leftJoinAndSelect("user.follower", "follower")
+        .loadRelationCountAndMap("user.followingTotal", "user.following")
+        .loadRelationCountAndMap("user.followerTotal", "user.follower")
+        .where("user.username LIKE :username", { username: `%${params}%` })
+        .getMany();
+
+      return response;
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during search user, please see this ${error}`,
+      };
+    }
+  }
 })();

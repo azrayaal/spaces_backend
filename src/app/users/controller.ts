@@ -65,18 +65,6 @@ export default new (class UserController {
     }
   }
 
-  // async createUser(req: Request, res: Response) {
-  //   try {
-  //     const data = req.body;
-  //     // console.log(data);
-  //     const user = await UserService.create(data);
-
-  //     res.status(200).json(user);
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // }
-
   async getDetail(req: Request, res: Response) {
     try {
       const id = req.params.id;
@@ -122,6 +110,18 @@ export default new (class UserController {
       await UserService.testDataUser();
       // console.log("data user Log In", res.locals.decodedData);
       res.status(200).json();
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async searchUser(req: Request, res: Response) {
+    try {
+      const params = req.query.username;
+
+      const response = await UserService.searchUser(params);
+
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
