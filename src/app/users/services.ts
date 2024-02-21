@@ -88,8 +88,8 @@ export default new (class UserServices {
   async getAll(): Promise<object | string> {
     try {
       const data = await this.UserRepository.createQueryBuilder("user")
-        .leftJoinAndSelect("user.following", "following")
-        .leftJoinAndSelect("user.follower", "follower")
+        // .leftJoinAndSelect("user.following", "following")
+        // .leftJoinAndSelect("user.follower", "follower")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
         .getMany();

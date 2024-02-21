@@ -13,20 +13,25 @@ export default new (class SpacesServices {
     try {
       const data = await this.SpacesRepository.createQueryBuilder("spaces")
         .leftJoinAndSelect("spaces.user", "user")
-        .select([
-          "spaces.id",
-          "spaces.content",
-          "spaces.image",
-          "user.id",
-          "full_name",
-          "username",
-          "email",
-          "profile_picture",
-          "profile_description",
-        ])
-        .orderBy("spaces.id", "DESC")
+        .leftJoinAndSelect("spaces.replies", "replies")
+        .leftJoinAndSelect("spaces.likes", "likes")
+        .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
+        .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
+        // .select([
+        //   "spaces.id",
+        //   "spaces.content",
+        //   "spaces.image",
+        //   "user.id",
+        //   "full_name",
+        //   "username",
+        //   "email",
+        //   "profile_picture",
+        //   "profile_description",
+        // ])
+        // .orderBy("spaces.id", "DESC")
         // .getCount();
-        .getRawMany();
+        // .getRawMany();
+        .getMany();
 
       return data;
     } catch (error) {
