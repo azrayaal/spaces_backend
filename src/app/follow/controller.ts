@@ -11,13 +11,20 @@ export default new (class FollowController {
     }
   }
 
-  // async getfollowdata(req: Request, res: Response){
-  //   try {
+  async follow(req: Request, res: Response) {
+    try {
+      const data = {
+        followingId: res.locals.loginSession.user.id,
+        followerId: parseInt(req.body.followerId),
+      };
 
-  //   } catch (error) {
-  //     res
-  //   }
-  // }
+      const response = await FollowService.follow(data);
+
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 
   async getDetail(req: Request, res: Response) {
     try {
@@ -28,6 +35,7 @@ export default new (class FollowController {
       res.status(500).json({ message: error.message });
     }
   }
+
   async getDetailFollow(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -38,15 +46,15 @@ export default new (class FollowController {
     }
   }
 
-  async unfollow(req: Request, res: Response) {
-    try {
-      const id = req.params;
+  // async unfollow(req: Request, res: Response) {
+  //   try {
+  //     const id = req.params;
 
-      const response = await FollowService.unFollow(id);
+  //     const response = await FollowService.unFollow(id);
 
-      res.status(200).json(response);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
+  //     res.status(200).json(response);
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // }
 })();

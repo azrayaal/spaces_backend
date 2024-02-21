@@ -108,7 +108,7 @@ export default new (class UserController {
   async testDataUser(req: Request, res: Response) {
     try {
       await UserService.testDataUser();
-      // console.log("data user Log In", res.locals.decodedData);
+      console.log("data user Log In", res.locals.loginSession.user);
       res.status(200).json();
     } catch (error) {
       res.status(500).json({ message: error.message });
