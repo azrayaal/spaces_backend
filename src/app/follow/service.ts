@@ -52,4 +52,16 @@ export default new (class FollowService {
       };
     }
   }
+
+  async unFollow(id: any): Promise<object | string> {
+    try {
+      await this.FollowRepository.delete(id);
+
+      return { message: `unfollowed` };
+    } catch (error) {
+      return {
+        message: `Ooops something went error during remove follow, please see this ==>> ${error}`,
+      };
+    }
+  }
 })();

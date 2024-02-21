@@ -158,4 +158,71 @@ export default new (class SpacesServices {
       };
     }
   }
+
+  // async searchSpaceorUser(params: any): Promise<object | string> {
+  //   try {
+  //     // const response = await this.UserRepository.createQueryBuilder("user")
+  //     //   .leftJoinAndSelect("user.following", "following")
+  //     //   .leftJoinAndSelect("user.follower", "follower")
+  //     //   .loadRelationCountAndMap("user.followingTotal", "user.following")
+  //     //   .loadRelationCountAndMap("user.followerTotal", "user.follower")
+  //     //   .where("user.username LIKE :username", { username: `%${params}%` })
+  //     //   .getMany();
+  //     // const response = await this.UserRepository.createQueryBuilder("user")
+  //     //   .leftJoinAndSelect("user.following", "following")
+  //     //   .leftJoinAndSelect("user.follower", "follower")
+  //     //   .loadRelationCountAndMap("user.followingTotal", "user.following")
+  //     //   .loadRelationCountAndMap("user.followerTotal", "user.follower")
+  //     //   .where("spaces.content LIKE :content OR user.username LIKE :username", {
+  //     //     username: `%${params}%`,
+  //     //     content: `%${params}%`,
+  //     //   })
+  //     //   .getMany();
+  //     // const userQuery = this.UserRepository.createQueryBuilder("user")
+  //     //   .leftJoinAndSelect("user.following", "following")
+  //     //   .leftJoinAndSelect("user.follower", "follower")
+  //     //   .loadRelationCountAndMap("user.followingTotal", "user.following")
+  //     //   .loadRelationCountAndMap("user.followerTotal", "user.follower")
+  //     //   .where("user.username LIKE :username", { username: `%${params}%` });
+  //     // const spacesQuery = this.SpacesRepository.createQueryBuilder(
+  //     //   "spaces"
+  //     // ).where("spaces.content LIKE :content", { content: `%${params}%` });
+  //     // const response = await this.UserRepository.createQueryBuilder()
+  //     //   .select("*")
+  //     //   .from((qb) => {
+  //     //     return qb
+  //     //       .select(["user.*"])
+  //     //       .from("(" + userQuery.getQuery() + ")", "user")
+  //     //       .unionAll((qb) => {
+  //     //         return qb
+  //     //           .select([
+  //     //             "spaces.*",
+  //     //             "'0' AS followingTotal",
+  //     //             "'0' AS followerTotal",
+  //     //             "NULL AS following",
+  //     //             "NULL AS follower",
+  //     //           ])
+  //     //           .from("(" + spacesQuery.getQuery() + ")", "spaces");
+  //     //       });
+  //     //   }, "result")
+  //     //   .setParameters(userQuery.getParameters())
+  //     //   .getRawMany();
+  //     // console.log(response);
+  //     // const response = await this.UserRepository.createQueryBuilder("user")
+  //     //   .leftJoinAndSelect("user.following", "following")
+  //     //   .leftJoinAndSelect("user.follower", "follower")
+  //     //   .loadRelationCountAndMap("user.followingTotal", "user.following")
+  //     //   .loadRelationCountAndMap("user.followerTotal", "user.follower")
+  //     //   .where("user.username LIKE :username OR spaces.content LIKE :content", {
+  //     //     username: `%${params}%`,
+  //     //     content: `%${params}%`,
+  //     //   })
+  //     //   .getMany();
+  //     // return response;
+  //   } catch (error) {
+  //     return {
+  //       message: `Ooops something went error during search user or space, please see this ${error}`,
+  //     };
+  //   }
+  // }
 })();

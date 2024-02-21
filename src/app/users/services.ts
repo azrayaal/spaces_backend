@@ -190,6 +190,7 @@ export default new (class UserServices {
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
         .where("user.username LIKE :username", { username: `%${params}%` })
+
         .getMany();
 
       return response;

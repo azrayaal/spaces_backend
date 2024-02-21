@@ -121,4 +121,16 @@ export default new (class SpacesController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  // async searchOrSpace(req: Request, res: Response) {
+  //   try {
+  //     const params = req.query.username || req.query.content;
+
+  //     const response = await SpacesServices.searchSpaceorUser(params);
+  //     console.log("params user or content", params);
+  //     res.status(200).json(response);
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // }
 })();

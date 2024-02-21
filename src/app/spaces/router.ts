@@ -14,6 +14,7 @@ router.post(
   SpacesController.create
 );
 router.get("/spaces/:id", SpacesController.getDetail);
+// router.get("/search", SpacesController.searchOrSpace);
 router.delete("/spaces/:id", AuthMiddleware.Auth, SpacesController.delete);
 
 export default router;
