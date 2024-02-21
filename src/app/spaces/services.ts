@@ -81,8 +81,8 @@ export default new (class SpacesServices {
       )
         .leftJoin("spaces.user", "user")
         .leftJoin("spaces.replies", "replies")
-        .loadRelationCountAndMap("spaces.totalReplies", "spaces.replies")
-        // .loadRelationCountAndMap("replies.totalReplies", "replies.spaces")
+        .loadRelationCountAndMap("spaces.total_Replies", "spaces.replies")
+        .loadRelationCountAndMap("spaces.total_Likes", "spaces.likes")
         .select([
           "spaces.id",
           "spaces.content",
@@ -92,7 +92,6 @@ export default new (class SpacesServices {
           "user.full_name",
           "user.username",
           "user.profile_picture",
-          "replies.id",
         ])
         .where("spaces.id = :id", { id })
         .getOne();
