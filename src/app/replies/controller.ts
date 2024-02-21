@@ -47,6 +47,8 @@ export default new (class ReplyControllers {
       // }
 
       console.log("data dari conttroller reply", data);
+      console.log("body.content dari conttroller reply", req.body.content);
+      console.log("body all dari conttroller reply", req.body);
 
       // const { error } = SpacesSchemeNoImg.validate(data);
       // if (error) {
@@ -54,8 +56,8 @@ export default new (class ReplyControllers {
       // }
       //
 
-      const reply = await ReplyServices.create(data);
-      res.status(200).json(reply);
+      // const reply = await ReplyServices.create(data);
+      // res.status(200).json(reply);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

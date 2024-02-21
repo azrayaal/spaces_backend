@@ -3,6 +3,7 @@ import UserRouter from "./app/users/router";
 import SpacesRouter from "./app/spaces/router";
 import FollowRouter from "./app/follow/router";
 import ReplyRouter from "./app/replies/router";
+import LikeRouter from "./app/likes/router";
 import { AppDataSource } from "./data-source";
 import "dotenv/config";
 var cors = require("cors");
@@ -19,6 +20,7 @@ AppDataSource.initialize()
     app.use("/api/v1", SpacesRouter);
     app.use("/api/v1", FollowRouter);
     app.use("/api/v1", ReplyRouter);
+    app.use("/api/v1", LikeRouter);
 
     // port
     const Port = 3000;
