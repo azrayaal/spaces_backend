@@ -54,12 +54,12 @@ export default new (class SpacesServices {
         user: user,
       });
 
-      console.log("data create", { ...data, user: user });
+      console.log("data create", { newSpaces });
 
-      const response = await this.SpacesRepository.save(newSpaces);
+      // const response = await this.SpacesRepository.save(newSpaces);
 
       return {
-        response,
+        // response,
         message: `New Spaces has been added`,
       };
     } catch (error) {

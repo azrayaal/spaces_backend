@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import SpacesServices from "./services";
-import cloudinary from "../../libs/cloudinary";
 import { SpacesScheme, SpacesSchemeNoImg } from "./validator";
 import cloudinaryConfig from "../../libs/cloudinary";
 
@@ -17,64 +16,25 @@ export default new (class SpacesController {
 
   async create(req: Request, res: Response) {
     try {
-      // if (req.file) {
-      //   const data = {
-      //     content: req.body.content,
-      //     created_at: new Date(),
-      //     image: res.locals.filename,
-      //     userId: res.locals.loginSession.user.id,
-      //   };
-
-      //   const { error, value } = SpacesScheme.validate(data);
-      //   if (error) {
-      //     return res.status(400).json(error.details[0].message);
-      //   }
-
-      //   cloudinary.upload();
-      //   await cloudinary.destination(value.image);
-
-      //   const Spaces = await SpacesServices.create(value);
-      //   res.status(200).json(Spaces);
-      // } else {
-      //   const data = {
-      //     content: req.body.content,
-      //     created_at: new Date(),
-      //     userId: res.locals.loginSession.user.id,
-      //   };
-
-      // let img = null;
-
-      // if (req.file) {
-      //   img = res.locals.filename;
-      // }
+      let img = null;
+      if (req.file) {
+        img = res.locals.filename;
+      }
 
       const data = {
         content: req.body.content,
         created_at: new Date(),
-        image: res.locals.filename,
+        image: img,
         userId: res.locals.loginSession.user.id,
       };
 
-      // if (req.file) {
-      // const { error, value } = SpacesScheme.validate(data);
-      // if (error) {
-      //   return res.status(400).json(error.details[0].message);
-      // }
-
-      cloudinaryConfig.upload();
-      await cloudinaryConfig.destination(data.image);
-      // }
-      // const { error, value } = SpacesSchemeNoImg.validate(data);
-      // if (error) {
-      //   return res.status(400).json(error.details[0].message);
-      // }
-
-      // console.log(data);
-
-      // const { error } = SpacesSchemeNoImg.validate(data);
-      // if (error) {
-      //   return res.status(400).json(error.details[0].message);
-      // }
+      if (req.file) {
+        // const { error, value } = SpacesScheme.validate(data);
+        // if (error) {
+        //   return res.status(400).json(error.details[0].message);
+        cloudinaryConfig.upload();
+        await cloudinaryConfig.destination(data.image);
+      }
 
       const Spaces = await SpacesServices.create(data);
       res.status(200).json(Spaces);
@@ -121,16 +81,4 @@ export default new (class SpacesController {
       res.status(500).json({ message: error.message });
     }
   }
-
-  // async searchOrSpace(req: Request, res: Response) {
-  //   try {
-  //     const params = req.query.username || req.query.content;
-
-  //     const response = await SpacesServices.searchSpaceorUser(params);
-  //     console.log("params user or content", params);
-  //     res.status(200).json(response);
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // }
 })();
