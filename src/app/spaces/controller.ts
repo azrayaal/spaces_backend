@@ -58,9 +58,12 @@ export default new (class SpacesController {
 
   async delete(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const data = {
+        id: req.params,
+        userId: res.locals.loginSession.user.id,
+      };
 
-      const deleteSpaces = await SpacesServices.delete(id);
+      const deleteSpaces = await SpacesServices.delete(data);
 
       res.status(200).json(deleteSpaces);
     } catch (error) {

@@ -4,10 +4,13 @@ import { AppDataSource } from "../../data-source";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import "dotenv/config";
+import { Follow } from "../../entities/Follow";
 
 export default new (class UserServices {
   private readonly UserRepository: Repository<User> =
     AppDataSource.getRepository(User);
+  private readonly FollowRepository: Repository<Follow> =
+    AppDataSource.getRepository(Follow);
 
   async register(data: any) {
     try {
@@ -28,7 +31,7 @@ export default new (class UserServices {
         password: hashPasword,
         profile_picture: data.profile_picture,
         profile_description: data.profile_description,
-        created_at: data.posted_at,
+        created_at: data.created_at,
       });
 
       // console.log("data regis", obj);
@@ -92,6 +95,15 @@ export default new (class UserServices {
         // .leftJoinAndSelect("user.follower", "follower")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
+        // .addSelect(["user.user_name as username"])
+        .select([
+          "user.id",
+          "user.username",
+          "user.full_name",
+          "user.profile_picture",
+          "user.profile_description",
+          "user.created_at",
+        ])
         .getMany();
       return data;
     } catch (error) {
@@ -172,9 +184,13 @@ export default new (class UserServices {
     }
   }
 
-  async testDataUser(): Promise<object | string> {
+  async testDataUser(id: number): Promise<object | string> {
     try {
-      await this.UserRepository.find();
+      const response = await this.UserRepository.findOne({ where: { id } });
+      return {
+        message: `User Log-In`,
+        response,
+      };
     } catch (error) {
       return {
         message: `Ooops something went wrong during test data user, please see this ${error}`,
@@ -197,6 +213,35 @@ export default new (class UserServices {
     } catch (error) {
       return {
         message: `Ooops something went wrong during search user, please see this ${error}`,
+      };
+    }
+  }
+
+  // buat kondisi di mana tampilkan user dari followingId yang belum ada di followerId
+  async suggestion(id: number): Promise<object | string> {
+    try {
+      const user = await this.UserRepository.findOne({
+        where: {
+          id: id,
+        },
+        relations: {
+          follower: true,
+          following: true,
+        },
+      });
+
+      const followedUserIds = user.follower.map((follow) => follow.id);
+
+      const suggestions = await this.UserRepository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.follower", "follower")
+        .where("user.id NOT IN (:...followedUserIds)", { followedUserIds })
+        .andWhere("user.id != :userId", { id })
+        .getMany();
+
+      return { suggestions, user };
+    } catch (error) {
+      return {
+        message: `Ooops something went error during get suggestion, ${error}`,
       };
     }
   }

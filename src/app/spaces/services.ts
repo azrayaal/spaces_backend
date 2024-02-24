@@ -28,7 +28,7 @@ export default new (class SpacesServices {
         //   "profile_picture",
         //   "profile_description",
         // ])
-        // .orderBy("spaces.id", "DESC")
+        .orderBy("spaces.id", "DESC")
         // .getCount();
         // .getRawMany();
         .getMany();
@@ -56,10 +56,10 @@ export default new (class SpacesServices {
 
       console.log("data create", { newSpaces });
 
-      // const response = await this.SpacesRepository.save(newSpaces);
+      const response = await this.SpacesRepository.save(newSpaces);
 
       return {
-        // response,
+        response,
         message: `New Spaces has been added`,
       };
     } catch (error) {
@@ -127,18 +127,34 @@ export default new (class SpacesServices {
     }
   }
 
-  async delete(id: any): Promise<object | string> {
+  async delete(data: any): Promise<object | string> {
     try {
-      const checkId = await this.SpacesRepository.findOne({ where: { id } });
-      if (!checkId) {
+      const { id } = data.id;
+      const userId = data.userId;
+
+      const user = await this.UserRepository.findOne({ where: { id: userId } });
+      const space = await this.SpacesRepository.findOne({ where: { id } });
+      if (!space) {
         return { message: `Ooops SpaceS can't be found` };
       }
 
-      const deleteSpaces = await this.SpacesRepository.delete(id);
+      const deleteSpace = await this.SpacesRepository.findOne({
+        where: {
+          id: space.id,
+          user: { id: user.id },
+          // kiri diambil dari entity, kanan diambil dari reb body yg udah kita find
+        },
+      });
 
+      if (deleteSpace) {
+        const deleteSpaces = await this.SpacesRepository.delete(id);
+        return {
+          message: `Spaces has been deleted!`,
+          deleteSpaces,
+        };
+      }
       return {
-        message: `Spaces has been deleted!`,
-        deleteSpaces,
+        message: `you cannot delete this content`,
       };
     } catch (error) {
       return {

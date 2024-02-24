@@ -107,9 +107,9 @@ export default new (class UserController {
 
   async testDataUser(req: Request, res: Response) {
     try {
-      await UserService.testDataUser();
-      console.log("data user Log In", res.locals.loginSession.user);
-      res.status(200).json();
+      const id = res.locals.loginSession.user.id;
+      const response = await UserService.testDataUser(id);
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -120,6 +120,19 @@ export default new (class UserController {
       const params = req.query.username;
 
       const response = await UserService.searchUser(params);
+
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async suggestion(req: Request, res: Response) {
+    try {
+      const id = res.locals.loginSession.user.id;
+      console.log(id);
+
+      const response = await UserService.suggestion(id);
 
       res.status(200).json(response);
     } catch (error) {

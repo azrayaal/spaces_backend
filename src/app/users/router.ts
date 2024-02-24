@@ -21,4 +21,6 @@ router.get("/user/:id", UserController.getDetail);
 router.get("/testdatauser", AuthMiddleware.Auth, UserController.testDataUser);
 router.get("/search-user", UserController.searchUser);
 
+router.get("/suggestion", AuthMiddleware.Auth, UserController.suggestion);
+
 export default router;
