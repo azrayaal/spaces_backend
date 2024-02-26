@@ -33,6 +33,9 @@ export class User {
   @Column()
   profile_description: string;
 
+  @Column({ nullable: true })
+  header: string;
+
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: Date;
 

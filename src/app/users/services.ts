@@ -51,15 +51,20 @@ export default new (class UserServices {
 
   async logIn(data: any) {
     try {
-      const checkEmail = await this.UserRepository.createQueryBuilder()
+      const checkEmail = await this.UserRepository.createQueryBuilder("user")
+        .loadRelationCountAndMap("user.followingTotal", "user.following")
+        .loadRelationCountAndMap("user.followerTotal", "user.follower")
         .where("email = :email OR username = :username", {
           email: data.email,
           username: data.username,
+          id: data.id,
         })
         .getOne();
 
+      console.log("checkEmail", checkEmail);
+
       if (!checkEmail) {
-        return `Your account has been not registered`;
+        return `Your account has not been registered`;
       }
       const comparePassword = await bcrypt.compare(
         data.password,
@@ -68,15 +73,19 @@ export default new (class UserServices {
       if (!comparePassword) {
         return `Password is wrong!!`;
       }
+
       const user = this.UserRepository.create({
         id: checkEmail.id,
         email: checkEmail.email,
-        // password: checkEmail.password,
+        created_at: checkEmail.created_at,
         username: checkEmail.username,
         full_name: checkEmail.full_name,
         profile_picture: checkEmail.profile_picture,
         profile_description: checkEmail.profile_description,
       });
+
+      console.log("userobj", user);
+
       const token = jwt.sign({ user }, process.env.SECRET_KEY, {
         expiresIn: "24h",
       });
@@ -136,12 +145,25 @@ export default new (class UserServices {
         };
       }
 
+      console.log("checkId", chekId);
+
       const detailUser = await this.UserRepository.createQueryBuilder("user")
         .leftJoinAndSelect("user.following", "following")
         .leftJoinAndSelect("user.follower", "follower")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
+        .where({ id: chekId.id })
         .getOne();
+
+      // const detailUser = await this.UserRepository.findOne({
+      //   where: { id: chekId.id },
+      //   relations: {
+      //     following: true,
+      //     follower: true,
+      //   },
+      // });
+
+      console.log("DetailUser", detailUser);
 
       return detailUser;
     } catch (error) {

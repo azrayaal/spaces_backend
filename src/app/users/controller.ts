@@ -48,8 +48,8 @@ export default new (class UserController {
     try {
       const data = req.body;
 
+      // console.log(data);
       const signIn = await UserService.logIn(data);
-
       res.status(200).json(signIn);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -68,6 +68,7 @@ export default new (class UserController {
   async getDetail(req: Request, res: Response) {
     try {
       const id = req.params.id;
+      console.log("id params", id);
 
       const detail = await UserService.getDetail(id);
 
@@ -87,6 +88,7 @@ export default new (class UserController {
         email: req.body.email,
         profile_picture: res.locals.filename,
         profile_description: req.body.profile_description,
+        // header: res.locals.filename,
       };
 
       const { error, value } = UpdateUserScheme.validate(data);
