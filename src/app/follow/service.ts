@@ -78,8 +78,8 @@ export default new (class FollowService {
       const response = await this.FollowRepository.save(newFollow);
 
       return {
-        response,
-        message: `Liked`,
+        // response,
+        message: `Followed`,
       };
     } catch (error) {
       return {

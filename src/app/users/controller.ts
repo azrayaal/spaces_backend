@@ -7,7 +7,7 @@ export default new (class UserController {
   async register(req: Request, res: Response) {
     try {
       let img =
-        "https://res.cloudinary.com/ddpo1vjim/image/upload/v1708411150/SpaceS/68661451_2780877505274604_8670345077089894400_n-1708411149217.png.jpg";
+        "https://res.cloudinary.com/ddpo1vjim/image/upload/v1709088253/SpaceS/hcjqoaztmmi2ykok6wpi.png";
 
       if (req.file) {
         img = res.locals.filename;
@@ -23,13 +23,15 @@ export default new (class UserController {
         created_at: Date.now(),
       };
 
+      console.log("data controller", data);
+
       const { error, value } = UserScheme.validate(data);
       if (error) {
         console.log(error);
         return res.status(400).json(error.details[0].message);
       }
 
-      console.log("dataimage", value);
+      console.log("dataimage", value.profile_picture);
 
       if (req.file) {
         cloudinary.upload();
@@ -81,23 +83,32 @@ export default new (class UserController {
   async updateUser(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      let img = null;
+      let hdr = null;
+
+      if (req.file) {
+        img = res.locals.filename;
+      }
+      if (req.file) {
+        hdr = res.locals.filename;
+      }
+
       const data = {
         id,
         username: req.body.username,
         full_name: req.body.full_name,
         email: req.body.email,
-        profile_picture: res.locals.filename,
+        // profile_picture: img,
         profile_description: req.body.profile_description,
-        // header: res.locals.filename,
+        header: hdr,
       };
-
       const { error, value } = UpdateUserScheme.validate(data);
       if (error) {
         return res.status(400).json(error.details[0].message);
       }
 
       cloudinary.upload();
-      await cloudinary.destination(value.profile_picture);
+      await cloudinary.destination(value.header);
 
       const updateResponse = await UserService.updateUser(value);
       res.status(200).json(updateResponse);
@@ -132,7 +143,7 @@ export default new (class UserController {
   async suggestion(req: Request, res: Response) {
     try {
       const id = res.locals.loginSession.user.id;
-      console.log(id);
+      // console.log(id);
 
       const response = await UserService.suggestion(id);
 

@@ -9,6 +9,7 @@ export default new (class CloudinaryConfig {
       secure: true,
     });
   }
+
   async destination(image: string): Promise<any> {
     try {
       const filename = image.split("/").pop();

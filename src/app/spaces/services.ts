@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Repository, Tree } from "typeorm";
 import { Spaces } from "../../entities/Space";
 import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
@@ -27,12 +27,27 @@ export default new (class SpacesServices {
         //   "email",
         //   "profile_picture",
         //   "profile_description",
+        //   "replies",
+        //   "likes",
         // ])
         .orderBy("spaces.id", "DESC")
-        // .getCount();
-        // .getRawMany();
         .getMany();
 
+      // const data = await this.SpacesRepository.find({
+      //   relations: {
+      //     replies: true,
+      //     likes: true,
+      //     user: true,
+      //   },
+      //   select: {
+      //     user: {
+      //       id: true,
+      //       full_name: true,
+      //       username: true,
+      //       profile_picture: true,
+      //     },
+      //   },
+      // });
       return data;
     } catch (error) {
       return {
@@ -54,7 +69,7 @@ export default new (class SpacesServices {
         user: user,
       });
 
-      console.log("data create", { newSpaces });
+      // console.log("data create", { newSpaces });
 
       const response = await this.SpacesRepository.save(newSpaces);
 

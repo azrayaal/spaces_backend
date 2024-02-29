@@ -34,13 +34,13 @@ export default new (class UserServices {
         created_at: data.created_at,
       });
 
-      // console.log("data regis", obj);
+      console.log("data regis", obj);
 
       const response = await this.UserRepository.save(obj);
 
       return {
         message: `Success!, You just created new account!`,
-        // response,
+        response,
       };
     } catch (error) {
       return {
@@ -172,6 +172,7 @@ export default new (class UserServices {
       };
     }
   }
+
   async updateUser(data: any): Promise<object | string> {
     try {
       const {
@@ -179,8 +180,9 @@ export default new (class UserServices {
         username,
         full_name,
         email,
-        profile_picture,
+        // profile_picture,
         profile_description,
+        header,
       } = data;
 
       const existingUser = await this.UserRepository.findOne({ where: { id } });
@@ -193,10 +195,13 @@ export default new (class UserServices {
       existingUser.username = username;
       existingUser.full_name = full_name;
       existingUser.email = email;
-      existingUser.profile_picture = profile_picture;
+      // existingUser.profile_picture = profile_picture;
       existingUser.profile_description = profile_description;
+      existingUser.header = header;
 
       const updateUser = await this.UserRepository.save(existingUser);
+
+      // console.log(existingUser);
 
       return { message: `Success, your account has been updated!`, updateUser };
     } catch (error) {
@@ -228,7 +233,6 @@ export default new (class UserServices {
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
         .where("user.username LIKE :username", { username: `%${params}%` })
-
         .getMany();
 
       return response;
@@ -242,25 +246,31 @@ export default new (class UserServices {
   // buat kondisi di mana tampilkan user dari followingId yang belum ada di followerId
   async suggestion(id: number): Promise<object | string> {
     try {
-      const user = await this.UserRepository.findOne({
-        where: {
-          id: id,
-        },
-        relations: {
-          follower: true,
-          following: true,
-        },
-      });
+      // const user = await this.UserRepository.findOne({
+      //   where: {
+      //     id: id,
+      //   },
+      //   relations: {
+      //     follower: true,
+      //     following: true,
+      //   },
+      // });
 
-      const followedUserIds = user.follower.map((follow) => follow.id);
+      // const userId = user.id;
 
+      // followingUserId adalah orang yang difollow diambil dari table follower
+      // const followingUserId = user.follower.map((follow) => follow.id);
+
+      // const followingUserIds = user.following.map((follow) => follow.id);
       const suggestions = await this.UserRepository.createQueryBuilder("user")
-        .leftJoinAndSelect("user.follower", "follower")
-        .where("user.id NOT IN (:...followedUserIds)", { followedUserIds })
-        .andWhere("user.id != :userId", { id })
+        // .leftJoinAndSelect("user.follower", "follower")
+        // .leftJoinAndSelect("user.following", "following")
+        // .where("follower.id =:follower", { followingUserId })
+        // .andWhere("user.id != :id", { id })
+        .andWhere("user.id != :id", { id })
         .getMany();
 
-      return { suggestions, user };
+      return suggestions;
     } catch (error) {
       return {
         message: `Ooops something went error during get suggestion, ${error}`,
