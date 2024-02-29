@@ -18,7 +18,7 @@ export class Spaces {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   content: string;
 
   @Column({ nullable: true })

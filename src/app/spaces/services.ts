@@ -147,27 +147,43 @@ export default new (class SpacesServices {
       const { id } = data.id;
       const userId = data.userId;
 
-      const user = await this.UserRepository.findOne({ where: { id: userId } });
-      const space = await this.SpacesRepository.findOne({ where: { id } });
+      // const user = await this.UserRepository.findOne({
+      //   where: { id: userId },
+      // });
+      const space = await this.SpacesRepository.findOne({
+        where: { id: id },
+        relations: { user: true },
+      });
       if (!space) {
         return { message: `Ooops SpaceS can't be found` };
       }
 
-      const deleteSpace = await this.SpacesRepository.findOne({
-        where: {
-          id: space.id,
-          user: { id: user.id },
-          // kiri diambil dari entity, kanan diambil dari reb body yg udah kita find
-        },
-      });
+      // console.log("delete", space.user.id, userId);
 
-      if (deleteSpace) {
+      if (space.user.id === userId) {
         const deleteSpaces = await this.SpacesRepository.delete(id);
         return {
           message: `Spaces has been deleted!`,
           deleteSpaces,
         };
       }
+
+      // const deleteSpace = await this.SpacesRepository.findOne({
+      //   where: {
+      //     id: space.id,
+      //     user: { id: user.id },
+      //     // kiri diambil dari entity, kanan diambil dari reb body yg udah kita find
+      //   },
+      // });
+      // console.log("deleteSpace", deleteSpace);
+
+      // if (deleteSpace) {
+      //   const deleteSpaces = await this.SpacesRepository.delete(id);
+      //   return {
+      //     message: `Spaces has been deleted!`,
+      //     deleteSpaces,
+      //   };
+      // }
       return {
         message: `you cannot delete this content`,
       };

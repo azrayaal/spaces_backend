@@ -15,8 +15,7 @@ export default new (class AuthMiddleware {
     try {
       const loginSession = jwt.verify(token, process.env.SECRET_KEY);
       res.locals.loginSession = loginSession;
-
-      // console.log("data user local", res.locals.loginSession.user.id);
+      // console.log(res.locals.loginSession);
 
       // const dataUserLokal = jwt.decode(token, { json: true }) as {
       //   [key: string]: any;

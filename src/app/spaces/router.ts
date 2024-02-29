@@ -7,14 +7,21 @@ const router = express.Router();
 
 router.get("/spaces", SpacesController.gettAll);
 router.get("/search-space", SpacesController.searchSpace);
+
 router.post(
   "/spaces",
   uploadFile.upload("image"),
   AuthMiddleware.Auth,
   SpacesController.create
 );
+
 router.get("/spaces/:id", SpacesController.getDetail);
 // router.get("/search", SpacesController.searchOrSpace);
-router.delete("/spaces/:id", AuthMiddleware.Auth, SpacesController.delete);
+
+router.delete(
+  "/space-delete/:id",
+  AuthMiddleware.Auth,
+  SpacesController.delete
+);
 
 export default router;

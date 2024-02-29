@@ -47,8 +47,10 @@ export default new (class SpacesController {
     try {
       const { id } = req.params;
 
+      // console.log("res.locals.loginSession spaces", res.locals.loginSession);
+
       const detail = await SpacesServices.getDetail(id);
-      // console.log(detail);
+      console.log(detail);
 
       res.status(200).json(detail);
     } catch (error) {

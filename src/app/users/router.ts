@@ -13,8 +13,9 @@ router.post(
   UserController.register
 );
 
-router.put(
+router.patch(
   "/edit-profile/:id",
+  // AuthMiddleware.Auth,
   uploadFile.upload("header"),
   // uploadFile.upload("profile_picture"),
   UserController.updateUser

@@ -50,7 +50,6 @@ export default new (class UserController {
     try {
       const data = req.body;
 
-      // console.log(data);
       const signIn = await UserService.logIn(data);
       res.status(200).json(signIn);
     } catch (error) {
@@ -83,12 +82,12 @@ export default new (class UserController {
   async updateUser(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      let img = null;
+      // let img = null;
       let hdr = null;
 
-      if (req.file) {
-        img = res.locals.filename;
-      }
+      // if (req.file) {
+      //   img = res.locals.filename;
+      // }
       if (req.file) {
         hdr = res.locals.filename;
       }
@@ -102,6 +101,9 @@ export default new (class UserController {
         profile_description: req.body.profile_description,
         header: hdr,
       };
+
+      console.log(data);
+
       const { error, value } = UpdateUserScheme.validate(data);
       if (error) {
         return res.status(400).json(error.details[0].message);
@@ -111,6 +113,7 @@ export default new (class UserController {
       await cloudinary.destination(value.header);
 
       const updateResponse = await UserService.updateUser(value);
+      // const updateResponse = await UserService.updateUser(data);
       res.status(200).json(updateResponse);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -121,6 +124,7 @@ export default new (class UserController {
   async testDataUser(req: Request, res: Response) {
     try {
       const id = res.locals.loginSession.user.id;
+      // console.log(res.locals.loginSession);
       const response = await UserService.testDataUser(id);
       res.status(200).json(response);
     } catch (error) {

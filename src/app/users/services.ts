@@ -61,7 +61,7 @@ export default new (class UserServices {
         })
         .getOne();
 
-      console.log("checkEmail", checkEmail);
+      // console.log("checkEmail", checkEmail);
 
       if (!checkEmail) {
         return `Your account has not been registered`;
@@ -84,7 +84,7 @@ export default new (class UserServices {
         profile_description: checkEmail.profile_description,
       });
 
-      console.log("userobj", user);
+      // console.log("userobj", user);
 
       const token = jwt.sign({ user }, process.env.SECRET_KEY, {
         expiresIn: "24h",
@@ -267,7 +267,9 @@ export default new (class UserServices {
         // .leftJoinAndSelect("user.following", "following")
         // .where("follower.id =:follower", { followingUserId })
         // .andWhere("user.id != :id", { id })
-        .andWhere("user.id != :id", { id })
+        .where("user.id != :id", { id })
+        .orderBy("user.id")
+        .limit(3)
         .getMany();
 
       return suggestions;
