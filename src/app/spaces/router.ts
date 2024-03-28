@@ -24,4 +24,10 @@ router.delete(
   SpacesController.delete
 );
 
+router.get(
+  "/getAllContentsByUser/:id",
+  // AuthMiddleware.Auth,
+  SpacesController.getAllcontentByUser
+);
+
 export default router;

@@ -145,21 +145,56 @@ export default new (class ReplyServices {
     }
   }
 
-  async getdetailallReply(params: any): Promise<object | string> {
+  // async getdetailallReply(params: any): Promise<object | string> {
+  //   try {
+  //     const response = await this.RepliesRepository.createQueryBuilder("reply")
+  //       .leftJoinAndSelect("reply.user", "user")
+  //       .leftJoinAndSelect("reply.spaces", "spaces")
+  //       // .orderBy({ where: { id: params } })
+  //       .getOne();
+
+  //     // findOne({ where: params });
+  //     console.log(response);
+
+  //     return response;
+  //   } catch (error) {
+  //     return {
+  //       message: `Oops something went error during getdetailreply, please see this ${error}`,
+  //     };
+  //   }
+  // }
+
+  async getAllbyId(id: any): Promise<object | string> {
     try {
-      const response = await this.RepliesRepository.createQueryBuilder("reply")
-        .leftJoinAndSelect("reply.user", "user")
-        .leftJoinAndSelect("reply.spaces", "spaces")
-        // .orderBy({ where: { id: params } })
-        .getOne();
+      const idSpace = parseInt(id);
 
-      // findOne({ where: params });
-      console.log(response);
+      // const spaceId = await this.SpaceRepository.findOne({
+      //   where: { id: idSpace },
+      // });
 
-      return response;
+      const allReplies = await this.RepliesRepository.find({
+        where: {
+          spaces: { id: idSpace },
+        },
+        relations: {
+          user: true,
+        },
+        order: { id: "DESC" },
+      });
+
+      // const allReplies = await this.RepliesRepository.createQueryBuilder(
+      //   "reply"
+      // )
+      //   .leftJoinAndSelect("reply.user", "user")
+      //   .leftJoinAndSelect("reply.spaces", "spaces")
+      //   .where("spaces.id = :idSpace", { idSpace })
+      //   .orderBy("reply.id", "DESC")
+      //   .getMany();
+
+      return allReplies;
     } catch (error) {
       return {
-        message: `Oops something went error during getdetailreply, please see this ${error}`,
+        message: `Ooops something went wrong during get all reply by id, please see this ==>> ${error}`,
       };
     }
   }

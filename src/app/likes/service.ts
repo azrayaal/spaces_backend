@@ -45,10 +45,10 @@ export default new (class LikeService {
         spaces: space,
       });
 
-      const response = await this.LikeRepository.save(like);
+      await this.LikeRepository.save(like);
       return {
-        response,
         message: `Liked`,
+        // like,
       };
     } catch (error) {
       return {

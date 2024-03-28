@@ -86,4 +86,16 @@ export default new (class SpacesController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async getAllcontentByUser(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const getAllContent = await SpacesServices.allContentsByUser(id);
+
+      res.status(200).json(getAllContent);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 })();

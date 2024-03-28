@@ -3,6 +3,8 @@ import ReplyServices from "./service";
 import cloudinary from "../../libs/cloudinary";
 // import { SpacesScheme, SpacesSchemeNoImg } from "./validator";
 import cloudinaryConfig from "../../libs/cloudinary";
+import { SpacesScheme, SpacesSchemeNoImg } from "../spaces/validator";
+import { ReplyScheme, ReplySchemeNoImg } from "./validator";
 
 export default new (class ReplyControllers {
   //   async gettAll(req: Request, res: Response) {
@@ -28,12 +30,11 @@ export default new (class ReplyControllers {
         created_at: new Date(),
         image: img,
         userId: res.locals.loginSession.user.id,
-        // spaceId: req.body.spaceId,
         spaceId: parseInt(req.body.spaceId),
       };
 
       if (req.file) {
-        // const { error, value } = SpacesScheme.validate(data);
+        // const { error, value } = ReplyScheme.validate(data);
         // if (error) {
         //   return res.status(400).json(error.details[0].message);
         // }
@@ -41,23 +42,14 @@ export default new (class ReplyControllers {
         cloudinary.upload();
         await cloudinary.destination(data.image);
       }
-      // const { error, value } = SpacesSchemeNoImg.validate(data);
+
+      // const { error } = ReplySchemeNoImg.validate(data);
       // if (error) {
       //   return res.status(400).json(error.details[0].message);
       // }
 
-      console.log("data dari conttroller reply", data);
-      console.log("body.content dari conttroller reply", req.body.content);
-      console.log("body all dari conttroller reply", req.body);
-
-      // const { error } = SpacesSchemeNoImg.validate(data);
-      // if (error) {
-      //   return res.status(400).json(error.details[0].message);
-      // }
-      //
-
-      // const reply = await ReplyServices.create(data);
-      // res.status(200).json(reply);
+      const reply = await ReplyServices.create(data);
+      res.status(200).json(reply);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -68,7 +60,7 @@ export default new (class ReplyControllers {
       const { id } = req.params;
 
       const detail = await ReplyServices.getDetail(id);
-      console.log(detail);
+      console.log(id);
 
       res.status(200).json(detail);
     } catch (error) {
@@ -88,14 +80,26 @@ export default new (class ReplyControllers {
   //     }
   //   }
 
-  async getdetailallReply(req: Request, res: Response) {
-    try {
-      const params = req.params;
-      const reply = await ReplyServices.getdetailallReply(params);
+  // async getdetailallReply(req: Request, res: Response) {
+  //   try {
+  //     const params = req.params;
 
-      res.status(200).json(reply);
+  //     const reply = await ReplyServices.getdetailallReply(params);
+
+  //     res.status(200).json(reply);
+  //   } catch (error) {
+  //     res.status(500).json(error);
+  //   }
+  // }
+
+  async getReplyDetailById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const response = await ReplyServices.getAllbyId(id);
+      res.status(200).json(response);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ message: error.message });
     }
   }
 })();

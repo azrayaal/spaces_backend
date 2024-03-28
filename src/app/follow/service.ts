@@ -9,7 +9,27 @@ export default new (class FollowService {
   private readonly UserRepository: Repository<User> =
     AppDataSource.getRepository(User);
 
-  async getDetailFollow(id: any): Promise<object | string> {
+  async getDetailFollowing(id: any): Promise<object | string> {
+    try {
+      const following = await this.FollowRepository.find({
+        where: {
+          following: { id: id },
+        },
+        relations: {
+          follower: true,
+        },
+      });
+
+      return following;
+      // follower,
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during getdetailfollowing, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async getDetailFollower(id: any): Promise<object | string> {
     try {
       const follower = await this.FollowRepository.find({
         where: {
@@ -20,22 +40,11 @@ export default new (class FollowService {
         },
       });
 
-      const following = await this.FollowRepository.find({
-        where: {
-          following: { id: id },
-        },
-        relations: {
-          follower: true,
-        },
-      });
-
-      return {
-        following,
-        follower,
-      };
+      return follower;
+      // follower,
     } catch (error) {
       return {
-        message: `Ooops something went wrong during getdetailfollow, please see this ==>> ${error}`,
+        message: `Ooops something went wrong during getdetailfollower, please see this ==>> ${error}`,
       };
     }
   }
@@ -78,7 +87,7 @@ export default new (class FollowService {
       const response = await this.FollowRepository.save(newFollow);
 
       return {
-        // response,
+        response,
         message: `Followed`,
       };
     } catch (error) {

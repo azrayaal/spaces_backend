@@ -227,15 +227,16 @@ export default new (class UserServices {
 
   async searchUser(params: any): Promise<object | string> {
     try {
-      const response = await this.UserRepository.createQueryBuilder("user")
+      const userSearch = await this.UserRepository.createQueryBuilder("user")
         .leftJoinAndSelect("user.following", "following")
         .leftJoinAndSelect("user.follower", "follower")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
-        .where("user.username LIKE :username", { username: `%${params}%` })
+        .where("user.username LIKE :username", { username: `${params}%` })
+        .take(5)
         .getMany();
 
-      return response;
+      return { userSearch };
     } catch (error) {
       return {
         message: `Ooops something went wrong during search user, please see this ${error}`,
