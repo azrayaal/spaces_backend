@@ -3,6 +3,7 @@ import { Replies } from "../../entities/Replies";
 import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
 import { Spaces } from "../../entities/Space";
+import { client } from "../../libs/redis";
 
 export default new (class ReplyServices {
   private readonly RepliesRepository: Repository<Replies> =
@@ -91,33 +92,40 @@ export default new (class ReplyServices {
 
   async getDetail(id: any): Promise<object | string> {
     try {
+      let dataRedis = await client.get("replyDetail");
+
       const checkId = await this.RepliesRepository.findOne({ where: { id } });
       if (!checkId) {
         return { message: `Ooops sorry Replies cant be found` };
       }
+      if (!dataRedis) {
+        const replyDetail = await this.RepliesRepository.createQueryBuilder(
+          "replies"
+        )
+          // .leftJoinAndSelect("replies.user", "user")
+          .leftJoinAndSelect("replies.user", "user")
+          .leftJoinAndSelect("replies.spaces", "spaces")
 
-      const replyDetail = await this.RepliesRepository.createQueryBuilder(
-        "replies"
-      )
-        // .leftJoinAndSelect("replies.user", "user")
-        .leftJoinAndSelect("replies.user", "user")
-        .leftJoinAndSelect("replies.spaces", "spaces")
+          // .select([
+          //   "replies.id",
+          //   "replies.content",
+          //   "replies.image",
+          //   "replies.created_at",
+          //   "user.id",
+          //   "spaces.id",
+          //   "spaces.content",
+          //   "user.username",
+          //   "user.profile_picture",
+          // ])
+          // .where("replies.id = :id", { id })
+          .getOne();
 
-        // .select([
-        //   "replies.id",
-        //   "replies.content",
-        //   "replies.image",
-        //   "replies.created_at",
-        //   "user.id",
-        //   "spaces.id",
-        //   "spaces.content",
-        //   "user.username",
-        //   "user.profile_picture",
-        // ])
-        // .where("replies.id = :id", { id })
-        .getOne();
+        const dataString = JSON.stringify(replyDetail);
+        dataRedis = dataString;
+        await client.set("replyDetail", dataRedis);
+      }
 
-      return replyDetail;
+      return JSON.parse(dataRedis);
     } catch (error) {
       return {
         message: `Ooops something went wrong during get detail, please see this ==>> ${error}`,
@@ -166,21 +174,26 @@ export default new (class ReplyServices {
 
   async getAllbyId(id: any): Promise<object | string> {
     try {
+      let dataRedis = await client.get("allReplies");
       const idSpace = parseInt(id);
 
       // const spaceId = await this.SpaceRepository.findOne({
       //   where: { id: idSpace },
       // });
-
-      const allReplies = await this.RepliesRepository.find({
-        where: {
-          spaces: { id: idSpace },
-        },
-        relations: {
-          user: true,
-        },
-        order: { id: "DESC" },
-      });
+      if (!dataRedis) {
+        const allReplies = await this.RepliesRepository.find({
+          where: {
+            spaces: { id: idSpace },
+          },
+          relations: {
+            user: true,
+          },
+          order: { id: "DESC" },
+        });
+        let dataString = JSON.stringify(allReplies);
+        dataRedis = dataString;
+        await client.set("allReplies", dataRedis);
+      }
 
       // const allReplies = await this.RepliesRepository.createQueryBuilder(
       //   "reply"
@@ -191,7 +204,7 @@ export default new (class ReplyServices {
       //   .orderBy("reply.id", "DESC")
       //   .getMany();
 
-      return allReplies;
+      return JSON.parse(dataRedis);
     } catch (error) {
       return {
         message: `Ooops something went wrong during get all reply by id, please see this ==>> ${error}`,

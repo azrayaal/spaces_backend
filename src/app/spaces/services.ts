@@ -69,6 +69,10 @@ export default new (class SpacesServices {
   }
 
   async create(data: any): Promise<object | string> {
+    const dataRedis = client.get("spaces");
+    if (dataRedis) {
+      client.del("spaces");
+    }
     try {
       const userId = data.userId;
 
