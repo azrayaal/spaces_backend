@@ -60,7 +60,9 @@ export default new (class SpacesServices {
         await client.set("spaces", dataRedis);
       }
 
-      return JSON.parse(dataRedis);
+      const data = JSON.parse(dataRedis);
+
+      return data;
     } catch (error) {
       return {
         message: `Ooops something went wrong during getting all the spaces ==>> ${error}`,
@@ -69,11 +71,11 @@ export default new (class SpacesServices {
   }
 
   async create(data: any): Promise<object | string> {
-    const dataRedis = client.get("spaces");
-    if (dataRedis) {
-      client.del("spaces");
-    }
     try {
+      const dataRedis = client.get("spaces");
+      if (dataRedis) {
+        client.del("spaces");
+      }
       const userId = data.userId;
 
       const user = await this.UserRepository.findOne({
@@ -142,7 +144,9 @@ export default new (class SpacesServices {
         await client.set("spacesDetail", dataRedis);
       }
 
-      return JSON.parse(dataRedis);
+      const spaceDetail = JSON.parse(dataRedis);
+
+      return spaceDetail;
     } catch (error) {
       return {
         message: `Ooops something went wrong during get detail, please see this ==>> ${error}`,
@@ -227,22 +231,15 @@ export default new (class SpacesServices {
 
   async searchSpace(params: any): Promise<object | string> {
     try {
-      let dataRedis = await client.get("searchSpace");
-      if (!dataRedis) {
-        const contentSearch = await this.SpacesRepository.createQueryBuilder(
-          "spaces"
-        )
-          .leftJoinAndSelect("spaces.user", "user")
-          .where("spaces.content LIKE :content", { content: `%${params}%` })
-          .take(5)
-          .getMany();
+      const contentSearch = await this.SpacesRepository.createQueryBuilder(
+        "spaces"
+      )
+        .leftJoinAndSelect("spaces.user", "user")
+        .where("spaces.content LIKE :content", { content: `%${params}%` })
+        .take(5)
+        .getMany();
 
-        let dataString = JSON.stringify(contentSearch);
-        dataRedis = dataString;
-        await client.set("searchSpace", dataRedis);
-      }
-
-      return JSON.parse(dataRedis);
+      return { contentSearch };
     } catch (error) {
       return {
         message: `Ooops something went wrong during serching space, please see this ${error}`,
