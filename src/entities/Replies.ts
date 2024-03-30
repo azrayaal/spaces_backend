@@ -20,11 +20,17 @@ export class Replies {
   @Column({ nullable: true })
   image: string;
 
-  @ManyToOne(() => User, (user) => user.replies)
+  @ManyToOne(() => User, (user) => user.replies, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToOne(() => Spaces, (spaces) => spaces.replies)
+  @ManyToOne(() => Spaces, (spaces) => spaces.replies, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "spaceId" })
   spaces: Spaces;
 

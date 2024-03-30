@@ -4,6 +4,7 @@ import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
 import { Replies } from "../../entities/Replies";
 import { client } from "../../libs/redis";
+import { Likes } from "../../entities/Likes";
 
 export default new (class SpacesServices {
   private readonly SpacesRepository: Repository<Spaces> =
@@ -12,6 +13,8 @@ export default new (class SpacesServices {
     AppDataSource.getRepository(User);
   private readonly RepliesRepository: Repository<Replies> =
     AppDataSource.getRepository(Replies);
+  private readonly LikesRepository: Repository<Likes> =
+    AppDataSource.getRepository(Likes);
 
   async getAll(): Promise<object | string> {
     try {
@@ -37,6 +40,7 @@ export default new (class SpacesServices {
           //   "replies",
           //   "likes",
           // ])
+          .take(20)
           .orderBy("spaces.id", "DESC")
           .getMany();
 
@@ -102,49 +106,49 @@ export default new (class SpacesServices {
 
   async getDetail(id: any): Promise<object | string> {
     try {
-      let dataRedis = await client.get("spacesDetail");
+      // let dataRedis = await client.get("spacesDetail");
 
       const checkId = await this.SpacesRepository.findOne({ where: { id } });
       if (!checkId) {
         return { message: `Ooops sorry SpaceS cant be found` };
       }
-      if (!dataRedis) {
-        const spaceDetail = await this.SpacesRepository.createQueryBuilder(
-          "spaces"
-        )
-          .leftJoin("spaces.user", "user")
-          .leftJoin("spaces.replies", "replies")
-          .loadRelationCountAndMap("spaces.total_Replies", "spaces.replies")
-          .loadRelationCountAndMap("spaces.total_Likes", "spaces.likes")
-          .select([
-            "spaces.id",
-            "spaces.content",
-            "spaces.image",
-            "spaces.created_at",
-            "user.id",
-            "user.full_name",
-            "user.username",
-            "user.profile_picture",
-          ])
-          .where("spaces.id = :id", { id })
-          .getOne();
-        // const replyContent = await this.RepliesRepository.createQueryBuilder(
-        //   "replies"
-        // )
-        //   .leftJoin("replies.spaces", "spaces")
-        //   .where("replies.id = :id", { id })
-        //   .getMany();
+      // if (!dataRedis) {
+      const spaceDetail = await this.SpacesRepository.createQueryBuilder(
+        "spaces"
+      )
+        .leftJoin("spaces.user", "user")
+        .leftJoin("spaces.replies", "replies")
+        .loadRelationCountAndMap("spaces.total_Replies", "spaces.replies")
+        .loadRelationCountAndMap("spaces.total_Likes", "spaces.likes")
+        .select([
+          "spaces.id",
+          "spaces.content",
+          "spaces.image",
+          "spaces.created_at",
+          "user.id",
+          "user.full_name",
+          "user.username",
+          "user.profile_picture",
+        ])
+        .where("spaces.id = :id", { id })
+        .getOne();
+      // const replyContent = await this.RepliesRepository.createQueryBuilder(
+      //   "replies"
+      // )
+      //   .leftJoin("replies.spaces", "spaces")
+      //   .where("replies.id = :id", { id })
+      //   .getMany();
 
-        // const stringDb = JSON.stringify(data);
-        // dataRedis = stringDb;
-        // await client.set("spaces", dataRedis);
+      // const stringDb = JSON.stringify(data);
+      // dataRedis = stringDb;
+      // await client.set("spaces", dataRedis);
 
-        const stringDb = JSON.stringify(spaceDetail);
-        dataRedis = stringDb;
-        await client.set("spacesDetail", dataRedis);
-      }
+      //   const stringDb = JSON.stringify(spaceDetail);
+      //   dataRedis = stringDb;
+      //   await client.set("spacesDetail", dataRedis);
+      // }
 
-      const spaceDetail = JSON.parse(dataRedis);
+      // const spaceDetail = JSON.parse(dataRedis);
 
       return spaceDetail;
     } catch (error) {
@@ -182,18 +186,14 @@ export default new (class SpacesServices {
       const { id } = data.id;
       const userId = data.userId;
 
-      // const user = await this.UserRepository.findOne({
-      //   where: { id: userId },
-      // });
       const space = await this.SpacesRepository.findOne({
         where: { id: id },
         relations: { user: true },
       });
+
       if (!space) {
         return { message: `Ooops SpaceS can't be found` };
       }
-
-      // console.log("delete", space.user.id, userId);
 
       if (space.user.id === userId) {
         const deleteSpaces = await this.SpacesRepository.delete(id);
@@ -201,13 +201,16 @@ export default new (class SpacesServices {
           message: `Spaces has been deleted!`,
           deleteSpaces,
         };
+      } else {
+        return {
+          message: `You cannot delete this content`,
+        };
       }
 
       // const deleteSpace = await this.SpacesRepository.findOne({
       //   where: {
-      //     id: space.id,
-      //     user: { id: user.id },
-      //     // kiri diambil dari entity, kanan diambil dari reb body yg udah kita find
+      //     id: id, // Filter by space ID
+      //     user: { id: userId }, // Filter by user ID
       //   },
       // });
       // console.log("deleteSpace", deleteSpace);
@@ -219,9 +222,9 @@ export default new (class SpacesServices {
       //     deleteSpaces,
       //   };
       // }
-      return {
-        message: `you cannot delete this content`,
-      };
+      // return {
+      //   message: `you cannot delete this content`,
+      // };
     } catch (error) {
       return {
         message: `Ooops something went wrong during delete SpaceS, please see this ==>> ${error}`,

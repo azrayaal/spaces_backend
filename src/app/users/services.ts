@@ -151,6 +151,7 @@ export default new (class UserServices {
       const detailUser = await this.UserRepository.createQueryBuilder("user")
         .leftJoinAndSelect("user.following", "following")
         .leftJoinAndSelect("user.follower", "follower")
+        .leftJoinAndSelect("user.likes", "likes")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
         .where({ id: chekId.id })

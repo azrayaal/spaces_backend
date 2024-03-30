@@ -27,19 +27,16 @@ export class Spaces {
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: Date;
 
-  @ManyToOne(() => User, (user) => user.spaces)
+  @ManyToOne(() => User, (user) => user.spaces, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @OneToMany(() => Replies, (replies) => replies.spaces, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Replies, (replies) => replies.spaces)
   replies: Replies[];
 
-  @OneToMany(() => Likes, (likes) => likes.spaces, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Likes, (likes) => likes.spaces)
   likes: Likes[];
 }

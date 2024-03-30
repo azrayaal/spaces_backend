@@ -3,6 +3,7 @@ import { Likes } from "../../entities/Likes";
 import { AppDataSource } from "../../data-source";
 import { User } from "../../entities/User";
 import { Spaces } from "../../entities/Space";
+import { client } from "../../libs/redis";
 
 export default new (class LikeService {
   private readonly LikeRepository: Repository<Likes> =
@@ -14,6 +15,10 @@ export default new (class LikeService {
 
   async like(data: any): Promise<object | string> {
     try {
+      const dataRedis = await client.get("spaces");
+      if (dataRedis) {
+        await client.del("spaces");
+      }
       const userId = data.userId;
       const spacesId = data.spacesId;
 
@@ -53,6 +58,28 @@ export default new (class LikeService {
     } catch (error) {
       return {
         message: `Ooops something went error during like, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async getAllbyId(id: any): Promise<object | string> {
+    try {
+      const allLike = await this.LikeRepository.find({
+        where: {
+          spaces: { id },
+        },
+        relations: {
+          spaces: true,
+          user: true,
+        },
+      });
+
+      const totalLikes = allLike.length;
+
+      return { likes: allLike, total_likes: totalLikes };
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong, please see this ==>> ${error}`,
       };
     }
   }
