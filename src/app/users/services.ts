@@ -1,4 +1,4 @@
-import { Repository, FindOptions } from "typeorm";
+import { Repository, FindOptions, getRepository, Not, In } from "typeorm";
 import { User } from "../../entities/User";
 import { AppDataSource } from "../../data-source";
 import * as bcrypt from "bcrypt";
@@ -35,7 +35,7 @@ export default new (class UserServices {
         created_at: data.created_at,
       });
 
-      console.log("data regis", obj);
+      // console.log("data regis", obj);
 
       const response = await this.UserRepository.save(obj);
 
@@ -146,14 +146,16 @@ export default new (class UserServices {
         };
       }
 
-      console.log("checkId", chekId);
+      // console.log("checkId", chekId);
 
       const detailUser = await this.UserRepository.createQueryBuilder("user")
         .leftJoinAndSelect("user.following", "following")
         .leftJoinAndSelect("user.follower", "follower")
         .leftJoinAndSelect("user.likes", "likes")
+        .leftJoinAndSelect("user.spaces", "spaces")
         .loadRelationCountAndMap("user.followingTotal", "user.following")
         .loadRelationCountAndMap("user.followerTotal", "user.follower")
+        .loadRelationCountAndMap("user.spaces", "user.spaces")
         .where({ id: chekId.id })
         .getOne();
 
@@ -165,7 +167,7 @@ export default new (class UserServices {
       //   },
       // });
 
-      console.log("DetailUser", detailUser);
+      // console.log("DetailUser", detailUser);
 
       return detailUser;
     } catch (error) {
@@ -205,7 +207,10 @@ export default new (class UserServices {
 
       // console.log(existingUser);
 
-      return { message: `Success, your account has been updated!`, updateUser };
+      return {
+        message: `Success, your account has been updated!`,
+        updateUser,
+      };
     } catch (error) {
       return {
         message: `Ooops something went wrong during getDetail, please see this ==>> ${error}`,
@@ -249,31 +254,39 @@ export default new (class UserServices {
   // buat kondisi di mana tampilkan user dari followingId yang belum ada di followerId
   async suggestion(id: number): Promise<object | string> {
     try {
-      // const user = await this.UserRepository.findOne({
-      //   where: {
-      //     id: id,
-      //   },
-      //   relations: {
-      //     follower: true,
-      //     following: true,
-      //   },
-      // });
+      const userId = id;
 
-      // const userId = user.id;
+      const followedUsers = await this.FollowRepository.find({
+        where: {
+          following: { id: userId },
+        },
+        relations: {
+          follower: true,
+        },
+        select: ["follower"],
+      });
 
-      // followingUserId adalah orang yang difollow diambil dari table follower
-      // const followingUserId = user.follower.map((follow) => follow.id);
+      if (!followedUsers || followedUsers.length === 0) {
+        return {
+          message: "Not following anyone.",
+        };
+      }
+      const followedIds = followedUsers.map((follow) => follow.follower.id);
 
-      // const followingUserIds = user.following.map((follow) => follow.id);
-      const suggestions = await this.UserRepository.createQueryBuilder("user")
-        // .leftJoinAndSelect("user.follower", "follower")
-        // .leftJoinAndSelect("user.following", "following")
-        // .where("follower.id =:follower", { followingUserId })
-        // .andWhere("user.id != :id", { id })
-        .where("user.id != :id", { id })
-        .orderBy("user.id")
-        .limit(3)
-        .getMany();
+      // Check if followedIds array is empty or undefined
+      const userIdsToExclude = followedIds.length > 0 ? followedIds : [0];
+
+      let suggestions = await this.UserRepository.find({
+        where: {
+          id: Not(In([userId, ...userIdsToExclude])),
+        },
+        // take: 3,
+      });
+
+      suggestions = shuffleArray(suggestions);
+
+      // Take only the first 3 elements
+      suggestions = suggestions.slice(0, 3);
 
       return suggestions;
     } catch (error) {
@@ -283,3 +296,11 @@ export default new (class UserServices {
     }
   }
 })();
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // Generate random index
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+  return array;
+}

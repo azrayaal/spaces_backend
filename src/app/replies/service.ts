@@ -42,6 +42,10 @@ export default new (class ReplyServices {
 
   async create(data: any): Promise<object | string> {
     try {
+      const dataRedis = await client.get("spaces");
+      if (dataRedis) {
+        await client.del("spaces");
+      }
       const userId = data.userId;
       const spaceId = data.spaceId;
 
@@ -60,8 +64,8 @@ export default new (class ReplyServices {
       });
 
       // console.log("Reply spaceid", space);
-      console.log("object data reply", newReply);
-      console.log("spaceId biasa", space);
+      // console.log("object data reply", newReply);
+      // console.log("spaceId biasa", space);
       // console.log("spaceId biasa", space);
 
       const response = await this.RepliesRepository.save(newReply);
@@ -92,40 +96,41 @@ export default new (class ReplyServices {
 
   async getDetail(id: any): Promise<object | string> {
     try {
-      let dataRedis = await client.get("replyDetail");
+      // let dataRedis = await client.get("replyDetail");
 
       const checkId = await this.RepliesRepository.findOne({ where: { id } });
       if (!checkId) {
         return { message: `Ooops sorry Replies cant be found` };
       }
-      if (!dataRedis) {
-        const replyDetail = await this.RepliesRepository.createQueryBuilder(
-          "replies"
-        )
-          // .leftJoinAndSelect("replies.user", "user")
-          .leftJoinAndSelect("replies.user", "user")
-          .leftJoinAndSelect("replies.spaces", "spaces")
+      // if (!dataRedis) {
+      const replyDetail = await this.RepliesRepository.createQueryBuilder(
+        "replies"
+      )
+        // .leftJoinAndSelect("replies.user", "user")
+        .leftJoinAndSelect("replies.user", "user")
+        .leftJoinAndSelect("replies.spaces", "spaces")
 
-          // .select([
-          //   "replies.id",
-          //   "replies.content",
-          //   "replies.image",
-          //   "replies.created_at",
-          //   "user.id",
-          //   "spaces.id",
-          //   "spaces.content",
-          //   "user.username",
-          //   "user.profile_picture",
-          // ])
-          // .where("replies.id = :id", { id })
-          .getOne();
+        // .select([
+        //   "replies.id",
+        //   "replies.content",
+        //   "replies.image",
+        //   "replies.created_at",
+        //   "user.id",
+        //   "spaces.id",
+        //   "spaces.content",
+        //   "user.username",
+        //   "user.profile_picture",
+        // ])
+        // .where("replies.id = :id", { id })
+        .getOne();
 
-        const dataString = JSON.stringify(replyDetail);
-        dataRedis = dataString;
-        await client.set("replyDetail", dataRedis);
-      }
+      //   const dataString = JSON.stringify(replyDetail);
+      //   dataRedis = dataString;
+      //   await client.set("replyDetail", dataRedis);
+      // }
 
-      return JSON.parse(dataRedis);
+      // return JSON.parse(dataRedis);
+      return replyDetail;
     } catch (error) {
       return {
         message: `Ooops something went wrong during get detail, please see this ==>> ${error}`,
@@ -174,26 +179,28 @@ export default new (class ReplyServices {
 
   async getAllbyId(id: any): Promise<object | string> {
     try {
-      let dataRedis = await client.get("allReplies");
+      // let dataRedis = await client.get("allReplies");
       const idSpace = parseInt(id);
 
       // const spaceId = await this.SpaceRepository.findOne({
       //   where: { id: idSpace },
       // });
-      if (!dataRedis) {
-        const allReplies = await this.RepliesRepository.find({
-          where: {
-            spaces: { id: idSpace },
-          },
-          relations: {
-            user: true,
-          },
-          order: { id: "DESC" },
-        });
-        let dataString = JSON.stringify(allReplies);
-        dataRedis = dataString;
-        await client.set("allReplies", dataRedis);
-      }
+      // if (!dataRedis) {
+      const allReplies = await this.RepliesRepository.find({
+        where: {
+          spaces: { id: idSpace },
+        },
+        relations: {
+          user: true,
+        },
+        order: { id: "DESC" },
+      });
+
+      const total_Replies = allReplies.length;
+      // let dataString = JSON.stringify(allReplies);
+      // dataRedis = dataString;
+      // await client.set("allReplies", dataRedis);
+      // }
 
       // const allReplies = await this.RepliesRepository.createQueryBuilder(
       //   "reply"
@@ -204,7 +211,9 @@ export default new (class ReplyServices {
       //   .orderBy("reply.id", "DESC")
       //   .getMany();
 
-      return JSON.parse(dataRedis);
+      // return JSON.parse(dataRedis);
+      return { reply: allReplies, total_Replies: total_Replies };
+      // return allReplies;
     } catch (error) {
       return {
         message: `Ooops something went wrong during get all reply by id, please see this ==>> ${error}`,

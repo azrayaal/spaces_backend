@@ -60,7 +60,7 @@ export default new (class ReplyControllers {
       const { id } = req.params;
 
       const detail = await ReplyServices.getDetail(id);
-      console.log(id);
+      // console.log(id);
 
       res.status(200).json(detail);
     } catch (error) {

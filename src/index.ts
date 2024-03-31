@@ -28,7 +28,7 @@ AppDataSource.initialize()
     app.use("/api/v1", AuhtRouter);
 
     // port
-    const Port = 3000;
+    const Port = 3001;
     app.listen(Port, async () => {
       await client.connect();
       console.log(`Server is running in port ${Port}`);

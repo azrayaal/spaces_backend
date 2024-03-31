@@ -10,8 +10,6 @@ export default new (class LikeControllers {
         spacesId: req.body.spacesId,
       };
 
-      console.log(data.spacesId);
-
       const response = await LikeService.like(data);
 
       res.status(200).json(response);

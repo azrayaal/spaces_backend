@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/following", AuthMiddleware.Auth, FollowController.getFollowing);
 router.get("/follower", AuthMiddleware.Auth, FollowController.getFollower);
+router.get("/following/:id", FollowController.getOtherFollowing);
+router.get("/follower/:id", FollowController.getOtherFollower);
 router.post("/follow", AuthMiddleware.Auth, FollowController.follow);
 
 export default router;

@@ -23,7 +23,7 @@ export default new (class UserController {
         created_at: Date.now(),
       };
 
-      console.log("data controller", data);
+      // console.log("data controller", data);
 
       const { error, value } = UserScheme.validate(data);
       if (error) {
@@ -31,7 +31,7 @@ export default new (class UserController {
         return res.status(400).json(error.details[0].message);
       }
 
-      console.log("dataimage", value.profile_picture);
+      // console.log("dataimage", value.profile_picture);
 
       if (req.file) {
         cloudinary.upload();
@@ -69,7 +69,7 @@ export default new (class UserController {
   async getDetail(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      console.log("id params", id);
+      // console.log("id params", id);
 
       const detail = await UserService.getDetail(id);
 
@@ -102,7 +102,7 @@ export default new (class UserController {
         header: hdr,
       };
 
-      console.log(data);
+      // console.log(data);
 
       const { error, value } = UpdateUserScheme.validate(data);
       if (error) {
@@ -147,7 +147,6 @@ export default new (class UserController {
   async suggestion(req: Request, res: Response) {
     try {
       const id = res.locals.loginSession.user.id;
-      // console.log(id);
 
       const response = await UserService.suggestion(id);
 

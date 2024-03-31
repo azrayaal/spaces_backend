@@ -27,6 +27,29 @@ export default new (class FollowController {
       res.status(500).json({ message: error.message });
     }
   }
+  async getOtherFollowing(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const dataFollow = await FollowService.getOtherDetailFollowing(id);
+
+      res.status(200).json(dataFollow);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getOtherFollower(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const dataFollow = await FollowService.getOtherDetailFollower(id);
+
+      res.status(200).json(dataFollow);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 
   async follow(req: Request, res: Response) {
     try {

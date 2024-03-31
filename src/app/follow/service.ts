@@ -48,6 +48,45 @@ export default new (class FollowService {
       };
     }
   }
+  async getOtherDetailFollowing(id: any): Promise<object | string> {
+    try {
+      const following = await this.FollowRepository.find({
+        where: {
+          following: { id: id },
+        },
+        relations: {
+          follower: true,
+        },
+      });
+
+      return following;
+      // follower,
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during getdetailfollowing, please see this ==>> ${error}`,
+      };
+    }
+  }
+
+  async getOtherDetailFollower(id: any): Promise<object | string> {
+    try {
+      const follower = await this.FollowRepository.find({
+        where: {
+          follower: { id: id },
+        },
+        relations: {
+          following: true,
+        },
+      });
+
+      return follower;
+      // follower,
+    } catch (error) {
+      return {
+        message: `Ooops something went wrong during getdetailfollower, please see this ==>> ${error}`,
+      };
+    }
+  }
 
   async follow(data: any): Promise<object | string> {
     try {
