@@ -17,6 +17,7 @@ export default new (class SpacesController {
   async create(req: Request, res: Response) {
     try {
       let img = null;
+
       if (req.file) {
         img = res.locals.filename;
       }
@@ -92,6 +93,18 @@ export default new (class SpacesController {
       const { id } = req.params;
 
       const getAllContent = await SpacesServices.allContentsByUser(id);
+
+      res.status(200).json(getAllContent);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getAllcontentByUserLogin(req: Request, res: Response) {
+    try {
+      const id = res.locals.loginSession.user.id;
+
+      const getAllContent = await SpacesServices.allContentByUserLogin(id);
 
       res.status(200).json(getAllContent);
     } catch (error) {

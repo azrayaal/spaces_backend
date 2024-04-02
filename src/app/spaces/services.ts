@@ -21,44 +21,16 @@ export default new (class SpacesServices {
       let dataRedis = await client.get("spaces");
 
       if (!dataRedis) {
-      const data = await this.SpacesRepository.createQueryBuilder("spaces")
-        .leftJoinAndSelect("spaces.user", "user")
-        .leftJoinAndSelect("spaces.replies", "replies")
-        .leftJoinAndSelect("spaces.likes", "likes")
-        .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
-        .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
-        // .select([
-        //   "spaces.id",
-        //   "spaces.content",
-        //   "spaces.image",
-        //   "user.id",
-        //   "full_name",
-        //   "username",
-        //   "email",
-        //   "profile_picture",
-        //   "profile_description",
-        //   "replies",
-        //   "likes",
-        // ])
-        .take(10)
-        .orderBy("spaces.id", "DESC")
-        .getMany();
+        const data = await this.SpacesRepository.createQueryBuilder("spaces")
+          .leftJoinAndSelect("spaces.user", "user")
+          .leftJoinAndSelect("spaces.replies", "replies")
+          .leftJoinAndSelect("spaces.likes", "likes")
+          .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
+          .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
+          .take(10)
+          .orderBy("spaces.id", "DESC")
+          .getMany();
 
-      // const data = await this.SpacesRepository.find({
-      //   relations: {
-      //     replies: true,
-      //     likes: true,
-      //     user: true,
-      //   },
-      //   select: {
-      //     user: {
-      //       id: true,
-      //       full_name: true,
-      //       username: true,
-      //       profile_picture: true,
-      //     },
-      //   },
-      // });
         const stringDb = JSON.stringify(data);
         dataRedis = stringDb;
         await client.set("spaces", dataRedis);
@@ -324,6 +296,38 @@ export default new (class SpacesServices {
   //     };
   //   }
   // }
+
+  async allContentByUserLogin(id: any): Promise<object | string> {
+    try {
+      const user = await this.UserRepository.findOne({ where: { id } });
+      let dataRedis = await client.get("allContentsByUser");
+
+      if (!dataRedis) {
+        const data = await this.SpacesRepository.createQueryBuilder("spaces")
+          .leftJoinAndSelect("spaces.user", "user")
+          .leftJoinAndSelect("spaces.replies", "replies")
+          .leftJoinAndSelect("spaces.likes", "likes")
+          .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
+          .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
+          .loadRelationCountAndMap("spaces.Total_Spaces", "spaces")
+          .orderBy("spaces.id", "DESC")
+          .where("user.id = :userId", { userId: user.id })
+          .getMany();
+
+        const dataString = JSON.stringify(data);
+        dataRedis = dataString;
+        await client.set("allContentsByUser", dataString);
+      }
+
+      const allContent = JSON.parse(dataRedis);
+
+      return allContent;
+    } catch (error) {
+      return {
+        message: `Oops something went error during get all content users, please see this ==>> ${error}`,
+      };
+    }
+  }
 
   async allContentsByUser(id: any): Promise<object | string> {
     try {

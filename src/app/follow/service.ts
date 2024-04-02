@@ -11,14 +11,18 @@ export default new (class FollowService {
 
   async getDetailFollowing(id: any): Promise<object | string> {
     try {
-      const following = await this.FollowRepository.find({
+      const follow = await this.FollowRepository.find({
         where: {
           following: { id: id },
         },
         relations: {
           follower: true,
+          following: true,
         },
       });
+      const status = "Unfollow";
+
+      const following = follow.map((follow) => ({ ...follow, status }));
 
       return following;
       // follower,
