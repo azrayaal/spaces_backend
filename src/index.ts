@@ -7,14 +7,14 @@ import LikeRouter from "./app/likes/router";
 import AuhtRouter from "./app/auth/router";
 import { AppDataSource } from "./data-source";
 import "dotenv/config";
-import { client } from "./libs/redis";
+// import { client } from "./libs/redis";
 var cors = require("cors");
 
 AppDataSource.initialize()
   .then(async () => {
     const app = express();
 
-    client.on("error", (err) => console.log("Redis Client Error", err));
+    // client.on("error", (err) => console.log("Redis Client Error", err));
 
     app.use(express.json());
     app.use(cors());
@@ -30,7 +30,7 @@ AppDataSource.initialize()
     // port
     const Port = process.env.PORT || 3002;
     app.listen(Port, async () => {
-      await client.connect();
+      // await client.connect();
       console.log(`Server is running in port ${Port}`);
       console.log(`
   =====    ========  =======     =====    =      =    =====      =====    =

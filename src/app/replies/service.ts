@@ -42,10 +42,10 @@ export default new (class ReplyServices {
 
   async create(data: any): Promise<object | string> {
     try {
-      const dataRedis = await client.get("spaces");
-      if (dataRedis) {
-        await client.del("spaces");
-      }
+      // const dataRedis = await client.get("spaces");
+      // if (dataRedis) {
+      //   await client.del("spaces");
+      // }
       const userId = data.userId;
       const spaceId = data.spaceId;
 

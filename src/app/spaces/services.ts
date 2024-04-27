@@ -18,25 +18,25 @@ export default new (class SpacesServices {
 
   async getAll(): Promise<object | string> {
     try {
-      let dataRedis = await client.get("spaces");
+      // let dataRedis = await client.get("spaces");
 
-      if (!dataRedis) {
-        const data = await this.SpacesRepository.createQueryBuilder("spaces")
-          .leftJoinAndSelect("spaces.user", "user")
-          .leftJoinAndSelect("spaces.replies", "replies")
-          .leftJoinAndSelect("spaces.likes", "likes")
-          .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
-          .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
-          .take(10)
-          .orderBy("spaces.id", "DESC")
-          .getMany();
+      // if (!dataRedis) {
+      const data = await this.SpacesRepository.createQueryBuilder("spaces")
+        .leftJoinAndSelect("spaces.user", "user")
+        .leftJoinAndSelect("spaces.replies", "replies")
+        .leftJoinAndSelect("spaces.likes", "likes")
+        .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
+        .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
+        .take(10)
+        .orderBy("spaces.id", "DESC")
+        .getMany();
 
-        const stringDb = JSON.stringify(data);
-        dataRedis = stringDb;
-        await client.set("spaces", dataRedis);
-      }
+      //   const stringDb = JSON.stringify(data);
+      //   dataRedis = stringDb;
+      //   await client.set("spaces", dataRedis);
+      // }
 
-      const data = JSON.parse(dataRedis);
+      // const data = JSON.parse(dataRedis);
 
       return data;
     } catch (error) {
@@ -48,10 +48,10 @@ export default new (class SpacesServices {
 
   async create(data: any): Promise<object | string> {
     try {
-      const dataRedis = client.get("spaces");
-      if (dataRedis) {
-        client.del("spaces");
-      }
+      // const dataRedis = client.get("spaces");
+      // if (dataRedis) {
+      //   client.del("spaces");
+      // }
       const userId = data.userId;
 
       const user = await this.UserRepository.findOne({
@@ -153,10 +153,10 @@ export default new (class SpacesServices {
 
   async delete(data: any): Promise<object | string> {
     try {
-      const dataRedis = await client.get("spaces");
-      if (dataRedis) {
-        await client.del("spaces");
-      }
+      // const dataRedis = await client.get("spaces");
+      // if (dataRedis) {
+      //   await client.del("spaces");
+      // }
       const { id } = data.id;
       const userId = data.userId;
 
@@ -300,26 +300,28 @@ export default new (class SpacesServices {
   async allContentByUserLogin(id: any): Promise<object | string> {
     try {
       const user = await this.UserRepository.findOne({ where: { id } });
-      let dataRedis = await client.get("allContentsByUser");
+      // let dataRedis = await client.get("allContentsByUser");
 
-      if (!dataRedis) {
-        const data = await this.SpacesRepository.createQueryBuilder("spaces")
-          .leftJoinAndSelect("spaces.user", "user")
-          .leftJoinAndSelect("spaces.replies", "replies")
-          .leftJoinAndSelect("spaces.likes", "likes")
-          .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
-          .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
-          .loadRelationCountAndMap("spaces.Total_Spaces", "spaces")
-          .orderBy("spaces.id", "DESC")
-          .where("user.id = :userId", { userId: user.id })
-          .getMany();
+      // if (!dataRedis) {
+      const allContent = await this.SpacesRepository.createQueryBuilder(
+        "spaces"
+      )
+        .leftJoinAndSelect("spaces.user", "user")
+        .leftJoinAndSelect("spaces.replies", "replies")
+        .leftJoinAndSelect("spaces.likes", "likes")
+        .loadRelationCountAndMap("spaces.Total_Replies", "spaces.replies")
+        .loadRelationCountAndMap("spaces.Total_Likes", "spaces.likes")
+        .loadRelationCountAndMap("spaces.Total_Spaces", "spaces")
+        .orderBy("spaces.id", "DESC")
+        .where("user.id = :userId", { userId: user.id })
+        .getMany();
 
-        const dataString = JSON.stringify(data);
-        dataRedis = dataString;
-        await client.set("allContentsByUser", dataString);
-      }
+      //   const dataString = JSON.stringify(data);
+      //   dataRedis = dataString;
+      //   await client.set("allContentsByUser", dataString);
+      // }
 
-      const allContent = JSON.parse(dataRedis);
+      // const allContent = JSON.parse(dataRedis);
 
       return allContent;
     } catch (error) {

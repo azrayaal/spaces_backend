@@ -15,10 +15,10 @@ export default new (class LikeService {
 
   async like(data: any): Promise<object | string> {
     try {
-      const dataRedis = await client.get("spaces");
-      if (dataRedis) {
-        await client.del("spaces");
-      }
+      // const dataRedis = await client.get("spaces");
+      // if (dataRedis) {
+      //   await client.del("spaces");
+      // }
       const userId = data.userId;
       const spacesId = data.spacesId;
 
