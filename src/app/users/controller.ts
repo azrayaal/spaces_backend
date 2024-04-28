@@ -6,8 +6,7 @@ import cloudinary from "../../libs/cloudinary";
 export default new (class UserController {
   async register(req: Request, res: Response) {
     try {
-      let img =
-        "https://res.cloudinary.com/ddpo1vjim/image/upload/v1709088253/SpaceS/hcjqoaztmmi2ykok6wpi.png";
+      let img = "hcjqoaztmmi2ykok6wpi";
 
       if (req.file) {
         img = res.locals.filename;

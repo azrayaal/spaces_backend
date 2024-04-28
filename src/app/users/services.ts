@@ -20,7 +20,19 @@ export default new (class UserServices {
         where: { email: data.email },
       });
       if (checkEmail > 0) {
-        return `${data.email} has been registered`;
+        return {
+          message: `${data.email} has been registered`,
+          status: 401,
+        };
+      }
+      const checkUserName = await this.UserRepository.count({
+        where: { username: data.username },
+      });
+      if (checkUserName > 0) {
+        return {
+          message: `username "${data.username}" has been registered`,
+          status: 401,
+        };
       }
       // HASHING PASSWORD
       const hashPasword = await bcrypt.hash(data.password, 10);
@@ -33,6 +45,7 @@ export default new (class UserServices {
         profile_picture: data.profile_picture,
         profile_description: data.profile_description,
         created_at: data.created_at,
+        header: "fx4fml93yssxzjetliv6",
       });
 
       // console.log("data regis", obj);
@@ -41,6 +54,7 @@ export default new (class UserServices {
 
       return {
         message: `Success!, You just created new account!`,
+        status: 400,
         response,
       };
     } catch (error) {
@@ -65,14 +79,20 @@ export default new (class UserServices {
       // console.log("checkEmail", checkEmail);
 
       if (!checkEmail) {
-        return `Your account has not been registered`;
+        return {
+          message: `Your account has not been registered`,
+          status: 401,
+        };
       }
       const comparePassword = await bcrypt.compare(
         data.password,
         checkEmail.password
       );
       if (!comparePassword) {
-        return `Password is wrong!!`;
+        return {
+          message: `Password is wrong!!`,
+          status: 401,
+        };
       }
 
       const user = this.UserRepository.create({
@@ -90,7 +110,7 @@ export default new (class UserServices {
       const token = jwt.sign({ user }, process.env.SECRET_KEY, {
         expiresIn: "24h",
       });
-      return { message: `Login Success!`, token };
+      return { message: `Login Success!`, token, status: 200 };
     } catch (error) {
       return {
         message: `Ooops something went error during Log In, please see this ${error}`,
