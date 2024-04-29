@@ -91,15 +91,23 @@ export default new (class UserController {
         hdr = res.locals.filename;
       }
 
-      const data = {
+      const data: any = {
         id,
-        username: req.body.username,
-        full_name: req.body.full_name,
-        email: req.body.email,
-        // profile_picture: img,
-        profile_description: req.body.profile_description,
-        header: hdr,
+        // username: req.body.username,
+        // full_name: req.body.full_name,
+        // email: req.body.email,
+        // // profile_picture: img,
+        // profile_description: req.body.profile_description,
+        // header: hdr,
       };
+
+      // Add only the fields that are provided in the request body
+      if (req.body.username) data.username = req.body.username;
+      if (req.body.full_name) data.full_name = req.body.full_name;
+      if (req.body.email) data.email = req.body.email;
+      if (req.body.profile_description)
+        data.profile_description = req.body.profile_description;
+      if (hdr) data.header = hdr;
 
       // console.log(data);
 

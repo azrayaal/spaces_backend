@@ -286,12 +286,8 @@ export default new (class UserServices {
         select: ["follower"],
       });
 
-      // if (!followedUsers || followedUsers.length === 0) {
-      //   return {
-      //     message: "Not following anyone.",
-      //   };
-      // }
       const followedIds = followedUsers.map((follow) => follow.follower.id);
+      // console.log(followedIds);
 
       // Check if followedIds array is empty or undefined
       const userIdsToExclude = followedIds.length > 0 ? followedIds : [0];

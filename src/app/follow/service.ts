@@ -11,7 +11,7 @@ export default new (class FollowService {
 
   async getDetailFollowing(id: any): Promise<object | string> {
     try {
-      const follow = await this.FollowRepository.find({
+      const following = await this.FollowRepository.find({
         where: {
           following: { id: id },
         },
@@ -20,9 +20,9 @@ export default new (class FollowService {
           following: true,
         },
       });
-      const status = "Unfollow";
+      // const status = "Unfollow";
 
-      const following = follow.map((follow) => ({ ...follow, status }));
+      // const following = follow.map((follow) => ({ ...follow, status }));
 
       return following;
       // follower,
